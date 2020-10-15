@@ -1,0 +1,13 @@
+.navbar-custom {
+  background-color: #600080;
+}
+
+.card-width {
+  width: 18rem;
+}
+
+.wordLength {
+  height: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

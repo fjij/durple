@@ -18,6 +18,8 @@ import { Transfer } from "./Transfer";
 import { TransactionErrorMessage } from "./TransactionErrorMessage";
 import { WaitingForTransactionMessage } from "./WaitingForTransactionMessage";
 import { NoTokensMessage } from "./NoTokensMessage";
+import { Durple } from "./Durple";
+import { Cards } from "./Cards";
 
 // This is the Buidler EVM network id, you might change it in the buidler.config.js
 // Here's a list of network ids https://docs.metamask.io/guide/ethereum-provider.html#properties
@@ -266,7 +268,7 @@ export function Dapp () {
 
     return false;
   }
-
+  return <Durple />;
   // Ethereum wallets inject the window.ethereum object. If it hasn't been
   // injected, we instruct the user to install MetaMask.
   if (window.ethereum === undefined) {
@@ -302,7 +304,7 @@ export function Dapp () {
       <div className="row">
         <div className="col-12">
           <h1>
-            {tokenData.name} ({tokenData.symbol})
+            {tokenData.name} ({tokenData. symbol})
           </h1>
           <p>
             Welcome <b>{selectedAddress}</b>, you have{" "}
