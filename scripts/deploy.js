@@ -19,17 +19,17 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  const Token = await ethers.getContractFactory("Token");
-  const token = await Token.deploy();
-  await token.deployed();
+  const SubFactory = await ethers.getContractFactory("Sub");
+  const Sub = await SubFactory.deploy();
+  await Sub.deployed();
 
-  console.log("Token address:", token.address);
+  console.log("Sub address:", Sub.address);
 
   // We also save the contract's artifacts and address in the frontend directory
-  saveFrontendFiles(token);
+  saveFrontendFiles(Sub);
 }
 
-function saveFrontendFiles(token) {
+function saveFrontendFiles(contract) {
   const fs = require("fs");
   const contractsDir = __dirname + "/../frontend/src/contracts";
 
@@ -39,12 +39,12 @@ function saveFrontendFiles(token) {
 
   fs.writeFileSync(
     contractsDir + "/contract-address.json",
-    JSON.stringify({ Token: token.address }, undefined, 2)
+    JSON.stringify({ Sub: contract.address }, undefined, 2)
   );
 
   fs.copyFileSync(
-    __dirname + "/../artifacts/Token.json",
-    contractsDir + "/Token.json"
+    __dirname + "/../artifacts/Sub.json",
+    contractsDir + "/Sub.json"
   );
 }
 
