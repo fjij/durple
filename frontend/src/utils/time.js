@@ -5,5 +5,9 @@ export function DurationToString(duration) {
   const days = hours / 24;
   const years = days / 365;
 
-  if (Math.round(years) >= 1) return `${years}`
+  if (Math.round(years) >= 1) return `${Math.round(years)}y`;
+  if (Math.round(days) >= 1) return `${Math.round(days)}d`;
+  if (Math.round(hours) >= 1) return `${Math.round(hours)}h`;
+  if (Math.round(minutes) >= 1) return `${Math.round(minutes)}m`;
+  return `${Math.round(seconds)}s`;
 }

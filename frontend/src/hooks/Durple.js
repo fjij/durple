@@ -55,7 +55,7 @@ export function useComment(contentId) {
   return useContent(contentId)
 }
 
-function useContent(contentId) {
+export function useContent(contentId) {
   const durple = useDurpleContext();
   const [content, setContent] = useState(undefined);
 

@@ -3,7 +3,9 @@ import '../styles/style.css';
 import {useDurpleContext, usePost} from '../hooks/Durple';
 import {Link} from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
-import { FaArrowAltCircleUp, FaArrowAltCircleDown } from 'react-icons/fa';
+import { FaCommentAlt } from 'react-icons/fa';
+import { DurationToString } from '../utils/time'
+import { Voter } from './Voter';
 
 export function SingleCard({contentId}) {
   const durple = useDurpleContext();
@@ -30,20 +32,21 @@ export function SingleCard({contentId}) {
         <h5 className="card-title"><b>{post?<Link to={"/Post/" + contentId.toString()}>{title}</Link>:<Skeleton />}</b></h5>
         <div className="card-text">
           <p className="wordLength">
-          {text?text:<Skeleton />}
+          {post?text:<Skeleton />}
           </p>
-        <button className="btn btn-sm" onClick={() => durple.upDurp(contentId)}><FaArrowAltCircleUp color="grey"/></button>
-        <small><b>{points!==null?<>{points}</>:<Skeleton width={20}/>}</b></small>
-        <button className="btn btn-sm" onClick={() => durple.downDurp(contentId)}><FaArrowAltCircleDown color="grey"/></button>
+              <Voter contentId={contentId}/>
+              <b>{post?<Link className="text-secondary" to={"/Post/" + contentId.toString()}><FaCommentAlt />{" "}{post.comments.length}</Link>:<Skeleton />}</b>
         </div>
       </div>
+
       <div className="card-footer">
           <small><code>{post?op:<Skeleton />}</code></small>
           <br />
         <small className="text-muted">
-        {post?(new Date(post.timeCreated)).toString():<Skeleton width={50}/>}
+        {post?DurationToString(Date.now() - post.timeCreated):<Skeleton width={50}/>}
         </small>
       </div>
+
   </div>
   )
 }
