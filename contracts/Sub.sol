@@ -22,24 +22,23 @@ contract Sub {
     Content[] content;
     uint256[] postIndices; // array that contains the index addresses of posts in content[]
 
-
     address public owner;
 
     constructor() public {
-        owner = msg.sender;
+      owner = msg.sender;
     }
 
 // makes a post and pushes it to the end of content. Also adds the index of that
 //  posts to postIndices
     function makePost(string calldata ipfsHash) external {
-        Content memory temp;
-        temp.ipfsHash = ipfsHash;
-        temp.op = msg.sender;
-        temp.udurp = 0;
-        temp.ddurp = 0;
-        temp.timeCreated = now;
-        postIndices.push(content.length);
-        content.push(temp);
+      Content memory temp;
+      temp.ipfsHash = ipfsHash;
+      temp.op = msg.sender;
+      temp.udurp = 0;
+      temp.ddurp = 0;
+      temp.timeCreated = now;
+      postIndices.push(content.length);
+      content.push(temp);
     }
 
 // takes ipfsHash and contentIndex, and adds a comment to it
@@ -71,6 +70,7 @@ contract Sub {
     function getPostIndex(uint256 postIndex) external view returns (uint256) {
       return postIndices[postIndex];
     }
+
 // give contentIndex and commentIndex, and return the corresponding index for content[]
 // ie convert commentIndex into contentIndex
     function getCommentIndex(uint256 contentIndex, uint256 commentIndex)
@@ -107,4 +107,28 @@ contract Sub {
       content[index].ddurp += 1;
       content[index].ddurped[msg.sender] = true;
     }
+
+// checks if content is upDurped
+    function isUpDurped(uint256 index) external view returns (bool) {
+      return content[index].udurped[msg.sender];
+    }
+
+// checks if content is downDurped
+    function isDownDurped(uint256 index) external view returns (bool) {
+      return content[index].ddurped[msg.sender];
+    }
+
+// undos an upDurp or a downDurp
+    function undoDurp(uint256 index) external {
+      require(content[index].ddurped[msg.sender] ||
+        content[index].udurped[msg.sender], "Nothing to undo");
+      if (content[index].ddurped[msg.sender]) {
+        content[index].ddurped[msg.sender] = false;
+        content[index].ddurp -= 1;
+      } else if (content[index].udurped[msg.sender]) {
+        content[index].udurped[msg.sender] = false;
+        content[index].udurp -= 1;
+      }
+    }
+
 }
