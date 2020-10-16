@@ -45,16 +45,11 @@ export function DurpleProvider({children}) {
 
   // EFFECTS
 
-  // Initialization effect - called when the selectedAddress is updated
+  // Initialization effect
   useEffect(() => {
-
-    if (selectedAddress === undefined)
-      return;
-
     intializeEthers();
     getSubData();
   }, [selectedAddress]);
-
 
   // REFS
 
@@ -69,14 +64,14 @@ export function DurpleProvider({children}) {
       return;
     }
 
-    initialize(selectedAddress);
+    setSelectedAddress(selectedAddress);
 
     // We reinitialize it whenever the user changes their account.
     window.ethereum.on("accountsChanged", ([newAddress]) => {
       if (newAddress === undefined) {
         return resetState();
       }
-      initialize(newAddress);
+      setSelectedAddress(newAddress);
     });
 
     // We reset the dapp state if the network is changed
@@ -85,18 +80,13 @@ export function DurpleProvider({children}) {
     });
   }
 
-  function initialize(userAddress) {
-    // This method initializes the dapp
-
-    // We first store the user's address in the component's state
-    setSelectedAddress(userAddress);
-
-    // An effect will be called that initializes the dapp
-  }
-
   async function intializeEthers() {
     // We first initialize ethers by creating a provider using window.ethereum
-    providerRef.current = new ethers.providers.Web3Provider(window.ethereum);
+    if (selectedAddress) {
+      providerRef.current = new ethers.providers.Web3Provider(window.ethereum);
+    } else {
+      providerRef.current = new ethers.providers.JsonRpcProvider({url: "http://localhost:8545", allowInsecure: true})
+    }
 
     // When, we initialize the contract using that provider and the token's
     // artifact. You can do this same thing with your contracts.
