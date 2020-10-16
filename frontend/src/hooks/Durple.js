@@ -155,7 +155,7 @@ export function DurpleProvider({children}) {
       return content[contentId];
     }
 
-    const [ipfsPath, op, ud, dd] = await subRef.current.getContent(contentId);
+    const [ipfsPath, op, ud, dd, timeCreated] = await subRef.current.getContent(contentId);
 
     let str = ""
     for await (const chunk of ipfs.cat(ipfsPath)) {
@@ -171,7 +171,8 @@ export function DurpleProvider({children}) {
       dd: dd.toNumber(),
       data: JSON.parse(str),
       contentId,
-      comments: []
+      comments: [],
+      timeCreated: timeCreated.toNumber()*1000,
     };
 
     setContent(c1 => {

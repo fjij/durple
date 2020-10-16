@@ -1,29 +1,37 @@
 import React from "react";
 import '../styles/style.css';
 import { SingleCard } from "./SingleCard";
+import { Loading } from './Loading';
 
-export function Cards() {
-  let cards = [];
-  for(let i = 0; i < 9; i++) {
-    cards.push(<SingleCard />)
+function Row({posts}) {
+  return (
+    <div className="card-columns">
+      {posts.map(contentId => <SingleCard contentId={contentId} key={contentId} />)}
+    </div>
+  );
+}
+
+export function Cards({posts}) {
+  const rowLength = 3;
+  const rows = [];
+  let currentRow = [];
+
+  if (!posts)
+    return <p> No posts yet! </p>;
+  for (let i = 0; i < posts.length; i ++) {
+    currentRow.push(posts[i]);
+    if (currentRow.length >= rowLength) {
+      rows.push(currentRow);
+      currentRow = [];
+    }
   }
+  if (currentRow.length > 0) {
+    rows.push(currentRow);
+  }
+
   return(
-  <div className="container-fluid col-xl-8">
-  <div className="card-deck">
-  <SingleCard />
-  <SingleCard />
-  <SingleCard />
-  </div>
-  <div className="card-deck mt-4">
-  <SingleCard />
-  <SingleCard />
-  <SingleCard />
-  </div>
-  <div className="card-deck mt-4">
-  <SingleCard />
-  <SingleCard />
-  <SingleCard />
-  </div>
-  </div>
+    <div className="container-fluid col-xl-8">
+        {rows.map((row, i) => <Row posts={row} key={i}/>)}
+    </div>
   )
 }
