@@ -159,14 +159,18 @@ export function DurpleProvider({children}) {
       // Check to see if any new durps
       async function fetchDurps() {
         const [ipfsPath, op, ud, dd, timeCreated] = await subRef.current.getContent(contentId);
-
+        const isUpDurped = await subRef.current.isUpDurped(contentId);
+        const isDownDurped = await subRef.current.isDownDurped(contentId);
+        
         // replace old values of ud and dd
         setContent(c1 => {
           const c2 = {...c1};
           c2[contentId] = {
             ...c2[contentId],
             ud: ud.toNumber(),
-            dd: dd.toNumber()
+            dd: dd.toNumber(),
+            isUpDurped,
+            isDownDurped
           };
           return c2;
         });
@@ -181,6 +185,8 @@ export function DurpleProvider({children}) {
 
     // get content
     const [ipfsPath, op, ud, dd, timeCreated] = await subRef.current.getContent(contentId);
+    const isUpDurped = await subRef.current.isUpDurped(contentId);
+    const isDownDurped = await subRef.current.isDownDurped(contentId);
 
     // resolve ipfs path
     let str = ""
@@ -198,6 +204,8 @@ export function DurpleProvider({children}) {
       dd: dd.toNumber(),
       data: JSON.parse(str),
       contentId,
+      isUpDurped,
+      isDownDurped,
       comments: [],
       timeCreated: timeCreated.toNumber()*1000,
     };
