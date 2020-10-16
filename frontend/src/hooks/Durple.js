@@ -5,6 +5,8 @@ import { ethers } from "ethers";
 import SubArtifact from "../contracts/Sub.json";
 import contractAddress from "../contracts/contract-address.json";
 
+import { useInterval } from './useInterval';
+
 const ipfsAPI = require('ipfs-http-client');
 const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' });
 
@@ -33,15 +35,42 @@ const DurpleContext = createContext({
   getRpcErrorMessage: () => {},
 
   makePost: async () => {},
+  getContent: () => {},
 });
 
 export function useDurpleContext() {
   return useContext(DurpleContext);
 }
 
+export function useSubData() {
+  const durple = useDurpleContext();
+  return durple.subData;
+}
+
+export function usePost(contentId) {
+  return useContent(contentId)
+}
+
+export function useComment(contentId) {
+  return useContent(contentId)
+}
+
+function useContent(contentId) {
+  const durple = useDurpleContext();
+  const [content, setContent] = useState(undefined);
+
+  useInterval(async () => {
+    setContent(await durple.getContent(contentId));
+    console.log('poll')
+  }, 1000);
+
+  return content;
+}
+
 export function DurpleProvider({children}) {
   // STATE
   const [subData, setSubData] = useState(undefined);
+  const [content, setContent] = useState({});
   const [selectedAddress, setSelectedAddress] = useState(undefined);
   // The ID about transactions being sent, and any possible error with them
   const [txBeingSent, setTxBeingSent] = useState(undefined);
@@ -53,26 +82,15 @@ export function DurpleProvider({children}) {
   // Initialization effect
   useEffect(() => {
     intializeEthers();
-    startPollingData();
-    return stopPollingData;
-  }, [selectedAddress, subData]);
+  }, [selectedAddress]);
+
+  useInterval(() => getSubData(), 1000);
 
 
   // REFS
 
-  const pollDataIntervalRef = useRef(undefined);
   const providerRef = useRef(undefined);
   const subRef = useRef(undefined);
-
-  function startPollingData() {
-    pollDataIntervalRef.current = setInterval(() => getSubData(), 1000);
-    getSubData();
-  }
-
-  function stopPollingData() {
-    clearInterval(pollDataIntervalRef.current);
-    pollDataIntervalRef.current = undefined;
-  }
 
   async function connectWallet() {
     const [selectedAddress] = await window.ethereum.enable();
@@ -114,6 +132,57 @@ export function DurpleProvider({children}) {
     );
   }
 
+  async function getContent(contentId){
+    if (content[contentId]) {
+      async function fetchComments() {
+        const commentCount = (await subRef.current.getCommentCount(contentId)).toNumber();
+        const prevCommentCount = content[contentId].comments.length;
+        const newComments = [...content[contentId].comments];
+        if (prevCommentCount < commentCount) {
+          for(let i = prevCommentCount; i < commentCount; i ++) {
+            const commentContentId = await subRef.current.getCommentIndex(contentId, i);
+            newComments.push(commentContentId);
+          }
+        }
+        setContent(c1 => {
+          const c2 = {...c1};
+          c2[contentId] = {...c2[contentId], comments: newComments};
+          return c2;
+        });
+      }
+
+      fetchComments();
+      return content[contentId];
+    }
+
+    const [ipfsPath, op, ud, dd] = await subRef.current.getContent(contentId);
+
+    let str = ""
+    for await (const chunk of ipfs.cat(ipfsPath)) {
+      for (const char of chunk) {
+        str += String.fromCharCode(char);
+      }
+    }
+
+    const element = {
+      ipfsPath,
+      op,
+      ud: ud.toNumber(),
+      dd: dd.toNumber(),
+      data: JSON.parse(str),
+      contentId,
+      comments: []
+    };
+
+    setContent(c1 => {
+      const c2 = {...c1};
+      c2[contentId] = element;
+      return c2;
+    });
+
+    return element;
+  }
+
   async function getSubData() {
 
     const postCount = (await subRef.current.getPostCount()).toNumber();
@@ -129,42 +198,23 @@ export function DurpleProvider({children}) {
     setSubData(subData => {return {...subData, postCount};})
 
     for(let i = prevPostCount; i < postCount; i ++) {
-      const postIndex = await subRef.current.getPostIndex(i);
-      const [ipfsPath, op, ud, dd] = await subRef.current.getContent(postIndex);
-      let str = ""
-      console.log(ipfsPath)
-      for await (const chunk of ipfs.cat(ipfsPath)) {
-        for (const char of chunk) {
-          str += String.fromCharCode(char);
-        }
-      }
-      const post = {
-        ipfsPath,
-        op,
-        ud: ud.toNumber(),
-        dd: dd.toNumber(),
-        content: JSON.parse(str),
-        index: i,
-      };
+      const contentId = await subRef.current.getPostIndex(i);
       setSubData(subData => {
         const prevPosts = subData.posts? subData.posts: [];
-        return { ...subData, posts: [...prevPosts, post]};
+        return { ...subData, posts: [...prevPosts, contentId]};
       });
     }
   }
 
-  async function makePost(content) {
-
+  async function attemptTransaction(fn) {
     try {
-      dismissTransactionError();
 
+      dismissTransactionError();
       if (!selectedAddress) {
         throw new Error("No wallet connected");
       }
 
-      const {cid} = await ipfs.add(JSON.stringify(content));
-
-      const tx = await subRef.current.makePost(cid.toString());
+      const tx = await fn();
       setTxBeingSent(tx.hash);
 
       const receipt = await tx.wait();
@@ -172,9 +222,6 @@ export function DurpleProvider({children}) {
       if (receipt.status === 0) {
         throw new Error("Transaction failed");
       }
-
-      // Maybe update some stuff here
-
     } catch (error) {
 
       if (error.code === ERROR_CODE_TX_REJECTED_BY_USER) {
@@ -184,9 +231,26 @@ export function DurpleProvider({children}) {
       setTransactionError(error);
 
     } finally {
-
       setTxBeingSent(undefined);
     }
+  }
+
+  async function makePost(title, isImage, url, text) {
+    const content = {title, isImage, url, text};
+    attemptTransaction(async() => {
+      const {cid} = await ipfs.add(JSON.stringify(content));
+      const tx = await subRef.current.makePost(cid.toString());
+      return tx;
+    });
+  }
+
+  async function makeComment(contentId, text) {
+    const content = {text};
+    attemptTransaction(async() => {
+      const {cid} = await ipfs.add(JSON.stringify(content));
+      const tx = await subRef.current.makeComment(cid.toString(), contentId);
+      return tx;
+    });
   }
 
   function dismissTransactionError() {
@@ -236,17 +300,9 @@ export function DurpleProvider({children}) {
     getRpcErrorMessage,
 
     makePost,
+    makeComment,
+    getContent,
   }
 
   return (<DurpleContext.Provider value={contextValue}>{children}</DurpleContext.Provider>)
-}
-
-export function newPost(title, isImage, url, text) {
-  const post = {
-    title,
-    isImage,
-    url,
-    text
-  }
-  return post;
 }
