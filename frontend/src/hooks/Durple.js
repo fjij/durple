@@ -253,6 +253,27 @@ export function DurpleProvider({children}) {
     });
   }
 
+  async function upDurp(contentIndex) {
+    attemptTransaction(async() => {
+      const tx = await subRef.current.upDurp(contentIndex);
+      return tx;
+    });
+  }
+
+  async function downDurp(contentIndex) {
+    attemptTransaction(async() => {
+      const tx = await subRef.current.downDurp(contentIndex);
+      return tx;
+    });
+  }
+
+  async function undoDurp(contentIndex) {
+    attemptTransaction(async() => {
+      const tx = await subRef.current.undoDurp(contentIndex);
+      return tx;
+    });
+  }
+
   function dismissTransactionError() {
     setTransactionError(undefined);
   }
@@ -302,6 +323,9 @@ export function DurpleProvider({children}) {
     makePost,
     makeComment,
     getContent,
+    upDurp,
+    downDurp,
+    undoDurp,
   }
 
   return (<DurpleContext.Provider value={contextValue}>{children}</DurpleContext.Provider>)

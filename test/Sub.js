@@ -175,10 +175,53 @@ describe("Sub contract", function () {
       await expect(contract.upDurp(0)).to.be.revertedWith("Already upDurped");
     });
 
-    it("Should produce an error after downDurping after an downDurp", async function() {
+    it("Should produce an error after downDurping after a downDurp", async function() {
       await contract.makePost("hash");
       await contract.downDurp(0);
       await expect(contract.downDurp(0)).to.be.revertedWith("Already downDurped");
+    });
+
+    it("Should be able to undo an upDurp", async function() {
+      await contract.makePost("hash");
+      await contract.upDurp(0);
+      await contract.undoDurp(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
+      expect(ud).to.equal(0);
+    });
+
+    it("Should be able to undo a downDurp", async function() {
+      await contract.makePost("hash");
+      await contract.downDurp(0);
+      await contract.undoDurp(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
+      expect(dd).to.equal(0);
+    });
+
+    it("Should produce an error after undoDurping content without a Durp", async function() {
+      await contract.makePost("hash");
+      await expect(contract.undoDurp(0)).to.be.revertedWith("Nothing to undo");
+    });
+
+    it("Should be able to detect if content is upDurped", async function() {
+      await contract.makePost("hash");
+      await contract.upDurp(0);
+      expect(true).to.equal(await contract.isUpDurped(0));
+    });
+
+    it("Should be able to detect if content is downDurped", async function() {
+      await contract.makePost("hash");
+      await contract.downDurp(0);
+      expect(true).to.equal(await contract.isDownDurped(0));
+    });
+
+    it("Should be able to detect if content is not upDurped", async function() {
+      await contract.makePost("hash");
+      expect(false).to.equal(await contract.isUpDurped(0));
+    });
+
+    it("Should be able to detect if content is not downDurped", async function() {
+      await contract.makePost("hash");
+      expect(false).to.equal(await contract.isDownDurped(0));
     });
 
   });
