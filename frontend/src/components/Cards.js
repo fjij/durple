@@ -8,7 +8,7 @@ export function Cards() {
     cards.push(<SingleCard />)
   }
   return(
-  <div className="container">
+  <div className="container-fluid">
   <div className="card-columns">
 
   {cards}
