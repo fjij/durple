@@ -28,6 +28,8 @@ const DurpleContext = createContext({
   dismissNetworkError: () => {},
   dismissTransactionError: () => {},
   getRpcErrorMessage: () => {},
+
+  makePost: async () => {},
 });
 
 export function useDurpleContext() {
@@ -48,14 +50,26 @@ export function DurpleProvider({children}) {
   // Initialization effect
   useEffect(() => {
     intializeEthers();
-    getSubData();
-  }, [selectedAddress]);
+    startPollingData();
+    return stopPollingData;
+  }, [selectedAddress, subData]);
+
 
   // REFS
 
   const pollDataIntervalRef = useRef(undefined);
   const providerRef = useRef(undefined);
   const subRef = useRef(undefined);
+
+  function startPollingData() {
+    pollDataIntervalRef.current = setInterval(() => getSubData(), 1000);
+    getSubData();
+  }
+
+  function stopPollingData() {
+    clearInterval(pollDataIntervalRef.current);
+    pollDataIntervalRef.current = undefined;
+  }
 
   async function connectWallet() {
     const [selectedAddress] = await window.ethereum.enable();
@@ -98,14 +112,31 @@ export function DurpleProvider({children}) {
   }
 
   async function getSubData() {
-    const name = await subRef.current.name();
-    const postCount = (await subRef.current.getPostCount()).toNumber();
-    setSubData({name, postCount});
 
-    for(let i = 0; i < postCount; i ++) {
-      const post = await subRef.current.getPost(0);
+    const postCount = (await subRef.current.getPostCount()).toNumber();
+    let prevPostCount = subData? subData.postCount: 0;
+    if (!subData) {
+      const name = await subRef.current.name();
+      setSubData({name, postCount});
+    }
+
+    if (prevPostCount === postCount) return;
+
+
+    setSubData(subData => {return {...subData, postCount};})
+
+    for(let i = prevPostCount; i < postCount; i ++) {
+      const postIndex = await subRef.current.getPostIndex(i);
+      const [hash, op, ud, dd] = await subRef.current.getContent(postIndex);
+      const post = {
+        hash,
+        op,
+        ud: ud.toNumber(),
+        dd: dd.toNumber()
+      };
       setSubData(subData => {
-        return { ...subData, posts: [...subData.posts, post]};
+        const prevPosts = subData.posts? subData.posts: [];
+        return { ...subData, posts: [...prevPosts, post]};
       });
     }
   }
@@ -114,6 +145,10 @@ export function DurpleProvider({children}) {
 
     try {
       dismissTransactionError();
+
+      if (!selectedAddress) {
+        throw new Error("No wallet connected");
+      }
 
       const tx = await subRef.current.makePost(ipfsHash);
       setTxBeingSent(tx.hash);
@@ -185,6 +220,8 @@ export function DurpleProvider({children}) {
     dismissNetworkError,
     dismissTransactionError,
     getRpcErrorMessage,
+
+    makePost,
   }
 
   return (<DurpleContext.Provider value={contextValue}>{children}</DurpleContext.Provider>)
