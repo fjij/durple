@@ -8,8 +8,6 @@ export function SubDurple() {
   const subData = useSubData();
   const durple = useDurpleContext();
 
-  console.log(subData);
-
   if (!subData)
     return <Loading />
 

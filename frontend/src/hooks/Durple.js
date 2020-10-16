@@ -151,7 +151,17 @@ export function DurpleProvider({children}) {
         });
       }
 
+      async function fetchDurps() {
+        const [ipfsPath, op, ud, dd, timeCreated] = await subRef.current.getContent(contentId);
+        setContent(c1 => {
+          const c2 = {...c1};
+          c2[contentId] = {...c2[contentId], ud: ud.toNumber(), dd: dd.toNumber()};
+          return c2;
+        });
+      }
+
       fetchComments();
+      fetchDurps();
       return content[contentId];
     }
 
