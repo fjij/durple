@@ -5,11 +5,15 @@ import { useDurpleContext } from '../hooks/Durple';
 export function ConnectWalletBtn() {
   const durple = useDurpleContext();
   if (durple.selectedAddress) {
-    return "Connected";
+    return(
+       <>
+       <div className="nav-item nav-link disabled">
+      Connected
+      </div>
+      </>
+    )
   }
   return(
-    <>
-      <button className="btn btn-primary btn-sm" onClick={durple.connectWallet}>Connect Wallet</button>
-    </>
+      <button className="btn btn-warning btn-sm" onClick={durple.connectWallet}>Connect Wallet</button>
   )
 }
