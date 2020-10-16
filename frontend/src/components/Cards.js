@@ -5,7 +5,7 @@ import { Loading } from './Loading';
 
 function Row({posts}) {
   return (
-    <div className="card-deck">
+    <div className="card-columns">
       {posts.map(contentId => <SingleCard contentId={contentId} key={contentId} />)}
     </div>
   );
