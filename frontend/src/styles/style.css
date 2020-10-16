@@ -1,17 +1,35 @@
 .navbar-custom {
-  background-color: #600080;
+  /*background-color: #600080;*/
+  background-color: #eeeeee;
 }
 
 /*.nav-bot-pad {
   margin-bottom: 1.5%
 }*/
 
-.card-width {
-  width: 18rem;
-}
-
 .wordLength {
-  height: 100px;
+  height: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.subTitle {
+  /*color:
+  background-color: #600080;*/
+  margin-top: 10px
+}
+
+.h5 {
+  font-family:
+}
+
+.aboutCenter img {
+  width: 100px;
+}
+
+.aboutCenter {
+  margin-top: 150px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
