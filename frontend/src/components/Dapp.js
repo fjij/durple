@@ -16,6 +16,7 @@ import { Cards } from "./Cards";
 import { DurpleProvider, useDurpleContext } from "../hooks/Durple";
 
 export function Dapp () {
+  return <Durple />
   return (<DurpleProvider>
     <Internals />
   </DurpleProvider>);
