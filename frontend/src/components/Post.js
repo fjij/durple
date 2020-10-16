@@ -22,6 +22,7 @@ export function Post() {
         </div>
       </div>
       <MakeComment contentId={contentId} disabled={!post}/>
+      {post?post.comments.map(contentId => <Comment contentId={contentId}/>):<></>}
     </div>
   )
 }
