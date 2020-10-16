@@ -34,13 +34,13 @@ describe("Sub contract", function () {
 
     it("Should give us the right hash back", async function() {
       await contract.makePost("hash");
-      let [ipfsHash, op, ud, dd] = await contract.getContent(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
       expect(ipfsHash).to.equal("hash");
     });
 
     it("Should have the right op", async function() {
       await contract.makePost("hash");
-      let [ipfsHash, op, ud, dd] = await contract.getContent(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
       expect(op).to.equal(await owner.getAddress());
     });
 
@@ -60,6 +60,13 @@ describe("Sub contract", function () {
       expect(await contract.getPostIndex(1)).to.equal(2);
     });
 
+    it("Should have the correct time it was created", async function() {
+      await contract.makePost("hash");
+      time = Date.now()/1000;
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
+      expect(true).to.equal(time - tc <= 1);
+    });
+
   });
 
   describe("Comments", function() {
@@ -73,14 +80,14 @@ describe("Sub contract", function () {
     it("Should give us the right hash back", async function() {
       await contract.makePost("hash");
       await contract.makeComment("abc", 0);
-      let [ipfsHash, op, ud, dd] = await contract.getContent(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
       expect(ipfsHash).to.equal("hash");
     });
 
     it("Should have the right op", async function() {
       await contract.makePost("hash");
       await contract.makeComment("abc", 0);
-      let [ipfsHash, op, ud, dd] = await contract.getContent(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
       expect(op).to.equal(await owner.getAddress());
     });
 
@@ -106,27 +113,27 @@ describe("Sub contract", function () {
 
     it("Should start with zero upDurps", async function() {
       await contract.makePost("hash");
-      let [ipfsHash, op, ud, dd] = await contract.getContent(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
       expect(ud).to.equal(0);
     });
 
     it("Should start with zero downDurps", async function() {
       await contract.makePost("hash");
-      let [ipfsHash, op, ud, dd] = await contract.getContent(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
       expect(dd).to.equal(0);
     });
 
     it("Should get one upDurp", async function() {
       await contract.makePost("hash");
       await contract.upDurp(0);
-      let [ipfsHash, op, ud, dd] = await contract.getContent(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
       expect(ud).to.equal(1);
     });
 
     it("Should get one downDurp", async function() {
       await contract.makePost("hash");
       await contract.downDurp(0);
-      let [ipfsHash, op, ud, dd] = await contract.getContent(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
       expect(dd).to.equal(1);
     });
 
@@ -134,7 +141,7 @@ describe("Sub contract", function () {
       await contract.makePost("hash");
       await contract.upDurp(0);
       await contract.downDurp(0);
-      let [ipfsHash, op, ud, dd] = await contract.getContent(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
       expect(dd).to.equal(1);
     });
 
@@ -142,7 +149,7 @@ describe("Sub contract", function () {
       await contract.makePost("hash");
       await contract.upDurp(0);
       await contract.downDurp(0);
-      let [ipfsHash, op, ud, dd] = await contract.getContent(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
       expect(ud).to.equal(0);
     });
 
@@ -150,7 +157,7 @@ describe("Sub contract", function () {
       await contract.makePost("hash");
       await contract.downDurp(0);
       await contract.upDurp(0);
-      let [ipfsHash, op, ud, dd] = await contract.getContent(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
       expect(dd).to.equal(0);
     });
 
@@ -158,7 +165,7 @@ describe("Sub contract", function () {
       await contract.makePost("hash");
       await contract.downDurp(0);
       await contract.upDurp(0);
-      let [ipfsHash, op, ud, dd] = await contract.getContent(0);
+      let [ipfsHash, op, ud, dd, tc] = await contract.getContent(0);
       expect(ud).to.equal(1);
     });
 
