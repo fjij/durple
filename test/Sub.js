@@ -162,6 +162,17 @@ describe("Sub contract", function () {
       expect(ud).to.equal(1);
     });
 
-  });
+    it("Should produce an error after upDurping after an upDurp", async function() {
+      await contract.makePost("hash");
+      await contract.upDurp(0);
+      await expect(contract.upDurp(0)).to.be.revertedWith("Already upDurped");
+    });
 
+    it("Should produce an error after downDurping after an downDurp", async function() {
+      await contract.makePost("hash");
+      await contract.downDurp(0);
+      await expect(contract.downDurp(0)).to.be.revertedWith("Already downDurped");
+    });
+
+  });
 });
