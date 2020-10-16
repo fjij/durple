@@ -68,6 +68,7 @@ export function Durple() {
               <Link to="/SubDurpleHome" className="nav-item nav-link">SubDurpleHome</Link>
               <Link to="/About" className="nav-item nav-link">About</Link>
               <Link to="/Post" className="nav-item nav-link">Post</Link>
+              <ConnectWalletBtn />
             </div>
         </div>
         </nav>

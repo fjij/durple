@@ -19,11 +19,12 @@ export function SingleCard({contentId}) {
     points = post.ud - post.dd;
     op = post.op;
     commentCount = post.comments.length;
+    console.log(post.data.url)
   }
 
   return(
   <div className="card card-width">
-    <img className="card-img-top" src="https://www.w3schools.com/bootstrap/newyork.jpg" alt="Card image cap"></img>
+    {post&&post.data.isImage&&post.data.url!=""?<img className="card-img-top" src={post?post.data.url:"https://images.unsplash.com/photo-1489278353717-f64c6ee8a4d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80"} alt="Card image cap"></img>:<></>}
       <div className="card-body">
         <h5 className="card-title"><b>{title?title:<Skeleton />}</b></h5>
         <p className="card-text">

@@ -9,7 +9,7 @@ export function ConnectWalletBtn() {
   }
   return(
     <>
-      <button className="btn" onClick={durple.connectWallet}>Connect Wallet></button>
+      <button className="btn btn-primary btn-sm" onClick={durple.connectWallet}>Connect Wallet</button>
     </>
   )
 }
