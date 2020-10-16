@@ -134,6 +134,10 @@ export function DurpleProvider({children}) {
 
   async function getContent(contentId){
     if (content[contentId]) {
+
+      // Second time it gets called
+
+      // Check to see if any new comments
       async function fetchComments() {
         const commentCount = (await subRef.current.getCommentCount(contentId)).toNumber();
         const prevCommentCount = content[contentId].comments.length;
@@ -144,6 +148,7 @@ export function DurpleProvider({children}) {
             newComments.push(commentContentId);
           }
         }
+        // replace old list of comments with new list of comments
         setContent(c1 => {
           const c2 = {...c1};
           c2[contentId] = {...c2[contentId], comments: newComments};
@@ -151,11 +156,18 @@ export function DurpleProvider({children}) {
         });
       }
 
+      // Check to see if any new durps
       async function fetchDurps() {
         const [ipfsPath, op, ud, dd, timeCreated] = await subRef.current.getContent(contentId);
+
+        // replace old values of ud and dd
         setContent(c1 => {
           const c2 = {...c1};
-          c2[contentId] = {...c2[contentId], ud: ud.toNumber(), dd: dd.toNumber()};
+          c2[contentId] = {
+            ...c2[contentId],
+            ud: ud.toNumber(),
+            dd: dd.toNumber()
+          };
           return c2;
         });
       }
@@ -165,8 +177,12 @@ export function DurpleProvider({children}) {
       return content[contentId];
     }
 
+    // First time it gets called
+
+    // get content
     const [ipfsPath, op, ud, dd, timeCreated] = await subRef.current.getContent(contentId);
 
+    // resolve ipfs path
     let str = ""
     for await (const chunk of ipfs.cat(ipfsPath)) {
       for (const char of chunk) {
@@ -174,6 +190,7 @@ export function DurpleProvider({children}) {
       }
     }
 
+    // create content object
     const element = {
       ipfsPath,
       op,
@@ -185,12 +202,14 @@ export function DurpleProvider({children}) {
       timeCreated: timeCreated.toNumber()*1000,
     };
 
+    // add this to the map
     setContent(c1 => {
       const c2 = {...c1};
       c2[contentId] = element;
       return c2;
     });
 
+    // give this back to the caller
     return element;
   }
 
