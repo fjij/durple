@@ -3,6 +3,7 @@ import '../styles/style.css';
 import { Cards } from "./Cards";
 import { About } from "./About";
 import { SubDurpleHome } from "./SubDurpleHome";
+import { Post } from "./Post";
 import logo from '../assets/logo.ico'
 //react router
 import {
@@ -50,7 +51,7 @@ export function Durple() {
 
 export function Durple() {
   return (
-    <div ClassName="container">
+    <div className="container">
     <Router>
       <div>
         <nav className="navbar navbar-expand-sm navbar-light navbar-custom nav-bot-pad">
@@ -59,6 +60,7 @@ export function Durple() {
             <div className="navbar-nav">
               <Link to="/SubDurpleHome" className="nav-item nav-link">SubDurpleHome</Link>
               <Link to="/About" className="nav-item nav-link">About</Link>
+              <Link to="/Post" className="nav-item nav-link">Post</Link>
             </div>
         </nav>
         <Switch>
@@ -67,6 +69,9 @@ export function Durple() {
           </Route>
           <Route path="/SubDurpleHome">
             <SubDurpleHome />
+          </Route>
+          <Route path="/Post">
+            <Post />
           </Route>
         </Switch>
       </div>
