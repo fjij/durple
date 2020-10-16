@@ -1,15 +1,26 @@
 import React from "react";
 import '../styles/style.css';
 import { Cards } from "./Cards";
+import { useSubData, useDurpleContext } from "../hooks/Durple";
+import { Loading } from "./Loading";
 
 export function SubDurple() {
-  const subD = "d/ " + "Funny"
+  const subData = useSubData();
+  const durple = useDurpleContext();
+
+  console.log(subData);
+
+  if (!subData)
+    return <Loading />
+
   return (
     <>
-      <div className="container text-center">
-      <h1 className="subTitle">{subD}</h1>
+    <div className="container text-center">
+      <h1 className="subTitle">d/{subData.name}</h1>
     </div>
-    <Cards />
+    <Cards posts={subData.posts}/>
+    <button onClick={() => durple.connectWallet()}>Connect wallet</button>
+    <button onClick={() => durple.makePost("TIFU by smelling funny", false, "", "hmm yuck.")}>Test post</button>
     </>
   )
 }

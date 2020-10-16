@@ -51,7 +51,7 @@ export function Durple() {
 
 export function Durple() {
   return (
-    <div className="container">
+    <div >
     <Router>
       <div>
         <nav className="navbar navbar-expand-sm navbar-light navbar-custom nav-bot-pad">
