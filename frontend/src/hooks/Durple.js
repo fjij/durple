@@ -5,6 +5,9 @@ import { ethers } from "ethers";
 import SubArtifact from "../contracts/Sub.json";
 import contractAddress from "../contracts/contract-address.json";
 
+const ipfsAPI = require('ipfs-http-client');
+const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' });
+
 // This is the Buidler EVM network id, you might change it in the buidler.config.js
 // Here's a list of network ids https://docs.metamask.io/guide/ethereum-provider.html#properties
 // to use when deploying to other networks.
@@ -127,12 +130,21 @@ export function DurpleProvider({children}) {
 
     for(let i = prevPostCount; i < postCount; i ++) {
       const postIndex = await subRef.current.getPostIndex(i);
-      const [hash, op, ud, dd] = await subRef.current.getContent(postIndex);
+      const [ipfsPath, op, ud, dd] = await subRef.current.getContent(postIndex);
+      let str = ""
+      console.log(ipfsPath)
+      for await (const chunk of ipfs.cat(ipfsPath)) {
+        for (const char of chunk) {
+          str += String.fromCharCode(char);
+        }
+      }
       const post = {
-        hash,
+        ipfsPath,
         op,
         ud: ud.toNumber(),
-        dd: dd.toNumber()
+        dd: dd.toNumber(),
+        content: JSON.parse(str),
+        index: i,
       };
       setSubData(subData => {
         const prevPosts = subData.posts? subData.posts: [];
@@ -141,7 +153,7 @@ export function DurpleProvider({children}) {
     }
   }
 
-  async function makePost(ipfsHash) {
+  async function makePost(content) {
 
     try {
       dismissTransactionError();
@@ -150,7 +162,9 @@ export function DurpleProvider({children}) {
         throw new Error("No wallet connected");
       }
 
-      const tx = await subRef.current.makePost(ipfsHash);
+      const {cid} = await ipfs.add(JSON.stringify(content));
+
+      const tx = await subRef.current.makePost(cid.toString());
       setTxBeingSent(tx.hash);
 
       const receipt = await tx.wait();
@@ -225,4 +239,14 @@ export function DurpleProvider({children}) {
   }
 
   return (<DurpleContext.Provider value={contextValue}>{children}</DurpleContext.Provider>)
+}
+
+export function newPost(title, isImage, url, text) {
+  const post = {
+    title,
+    isImage,
+    url,
+    text
+  }
+  return post;
 }
