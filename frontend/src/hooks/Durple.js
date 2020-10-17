@@ -313,6 +313,7 @@ export function DurpleProvider({children}) {
   }
 
   async function attemptTransaction(fn) {
+    let success = true;
     try {
 
       dismissTransactionError();
@@ -335,15 +336,17 @@ export function DurpleProvider({children}) {
       }
       console.error(error);
       setTransactionError(error);
+      success = false;
 
     } finally {
       setTxBeingSent(undefined);
     }
+    return success;
   }
 
   async function makePost(title, isImage, url, text) {
     const content = {title, isImage, url, text};
-    attemptTransaction(async() => {
+    return await attemptTransaction(async() => {
       const {cid} = await ipfs.add(JSON.stringify(content));
       const tx = await subRef.current.makePost(cid.toString());
       return tx;
@@ -352,7 +355,7 @@ export function DurpleProvider({children}) {
 
   async function makeComment(contentId, text) {
     const content = {text};
-    attemptTransaction(async() => {
+    return await attemptTransaction(async() => {
       const {cid} = await ipfs.add(JSON.stringify(content));
       const tx = await subRef.current.makeComment(cid.toString(), contentId);
       return tx;
@@ -360,21 +363,21 @@ export function DurpleProvider({children}) {
   }
 
   async function upDurp(contentIndex) {
-    attemptTransaction(async() => {
+    return await attemptTransaction(async() => {
       const tx = await subRef.current.upDurp(contentIndex);
       return tx;
     });
   }
 
   async function downDurp(contentIndex) {
-    attemptTransaction(async() => {
+    return await attemptTransaction(async() => {
       const tx = await subRef.current.downDurp(contentIndex);
       return tx;
     });
   }
 
   async function undoDurp(contentIndex) {
-    attemptTransaction(async() => {
+    return await attemptTransaction(async() => {
       const tx = await subRef.current.undoDurp(contentIndex);
       return tx;
     });

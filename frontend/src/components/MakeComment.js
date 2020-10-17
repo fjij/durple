@@ -7,6 +7,7 @@ import Skeleton from 'react-loading-skeleton';
 
 export function MakeComment({contentId, disabled}) {
   const durple = useDurpleContext();
+  const [waiting, setWaiting] = useState(false);
   const [text, setText] = useState("");
   if (!durple.selectedAddress) {
     return "";
@@ -16,18 +17,23 @@ export function MakeComment({contentId, disabled}) {
       <div className="card mt-4">
         <div className="card-body">
           <h5>Comment</h5>
-          <form className="mt-4" onSubmit={e => {
+          <form className="mt-4" onSubmit={async (e) => {
             e.preventDefault();
             if (text != "") {
-              durple.makeComment(contentId, text);
-              setText("")
+              setWaiting(true);
+              const success = await durple.makeComment(contentId, text);
+              setWaiting(false);
+              if (success)
+                setText("")
             }
           }}>
-            <div className="form-group">
-              <textarea className="form-control" value={text} onChange={e => setText(e.target.value)} />
-            </div>
+            <fieldset disabled={waiting}>
+              <div className="form-group">
+                <textarea className="form-control" value={text} onChange={e => setText(e.target.value)} />
+              </div>
 
-            <input className="btn btn-primary" type="submit" value="Submit" disabled={disabled}></input>
+              <input className="btn btn-primary" type="submit" value="Submit" disabled={disabled}></input>
+            </fieldset>
           </form>
         </div>
       </div>
