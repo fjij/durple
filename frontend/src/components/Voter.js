@@ -33,12 +33,12 @@ export function Voter({contentId}) {
   }
 
   return (<div className= "d-flex flex-row p-0 mr-3">
-    <div className="mr-2" onClick={upDurp}>
-      <FaArrowAltCircleUp color={isUpDurped?"purple":"grey"}/>
+    <div className={"mr-2 vote "+(isUpDurped?"voteUp":"")} onClick={upDurp}>
+      <FaArrowAltCircleUp/>
     </div>
     <b>{content?<>{content.ud - content.dd}</>:<Skeleton width={20}/>}</b>
-    <div className="ml-2" onClick={downDurp}>
-      <FaArrowAltCircleDown color={isDownDurped?"orange":"grey"}/>
+    <div className={"ml-2 vote "+(isDownDurped?"voteDown":"")} onClick={downDurp}>
+      <FaArrowAltCircleDown />
     </div>
   </div>
 );

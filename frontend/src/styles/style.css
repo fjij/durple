@@ -55,3 +55,27 @@
 .singleCard:hover {
   border-color: #999999;
 }
+
+.vote {
+  color:grey;
+}
+
+.vote:hover {
+  color:#444444;
+}
+
+.voteUp {
+  color: purple;
+}
+
+.voteUp:hover {
+  color:#4B0082;
+}
+
+.voteDown {
+  color: orange;
+}
+
+.voteDown:hover {
+  color:#B22222;
+}

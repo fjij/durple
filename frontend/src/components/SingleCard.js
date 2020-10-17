@@ -38,7 +38,7 @@ export function SingleCard({contentId}) {
   }}>
     {post&&post.data.isImage&&post.data.url!=""?<img className="card-img-top" src={post?post.data.url:"https://images.unsplash.com/photo-1489278353717-f64c6ee8a4d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80"} alt="Card image cap"></img>:<></>}
       <div className="card-body">
-        <h5 className="card-title"><b>{post?<Link className="colorHead" to={"/Post/" + contentId.toString()}>{title}</Link>:<Skeleton />}</b></h5>
+        <h5 className="card-title"><b>{post?title:<Skeleton />}</b></h5>
         <div className="card-text">
           <p className="wordLength">
           {post?text:<Skeleton />}
