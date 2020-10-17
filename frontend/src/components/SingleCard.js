@@ -3,8 +3,8 @@ import '../styles/style.css';
 import {useDurpleContext, usePost} from '../hooks/Durple';
 import {Link} from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
-import { FaCommentAlt } from 'react-icons/fa';
 import { DurationToString } from '../utils/time'
+import { CommentWidget } from './CommentWidget';
 import { Voter } from './Voter';
 
 export function SingleCard({contentId}) {
@@ -35,7 +35,7 @@ export function SingleCard({contentId}) {
           {post?text:<Skeleton />}
           </p>
               <Voter contentId={contentId}/>
-              <b>{post?<Link className="text-secondary" to={"/Post/" + contentId.toString()}><FaCommentAlt />{" "}{post.comments.length}</Link>:<Skeleton />}</b>
+              <CommentWidget contentId={contentId}/>
         </div>
       </div>
 

@@ -17,8 +17,6 @@ export function SubDurple() {
       <h1 className="subTitle">d/{subData.name}</h1>
     </div>
     <Cards posts={subData.posts}/>
-    <button onClick={() => durple.connectWallet()}>Connect wallet</button>
-    <button onClick={() => durple.makePost("TIFU by smelling funny", false, "", "hmm yuck.")}>Test post</button>
     </>
   )
 }

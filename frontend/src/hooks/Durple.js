@@ -61,7 +61,6 @@ export function useContent(contentId) {
 
   useInterval(async () => {
     setContent(await durple.getContent(contentId));
-    console.log('poll')
   }, 1000);
 
   return content;
@@ -161,7 +160,7 @@ export function DurpleProvider({children}) {
         const [ipfsPath, op, ud, dd, timeCreated] = await subRef.current.getContent(contentId);
         const isUpDurped = await subRef.current.isUpDurped(contentId);
         const isDownDurped = await subRef.current.isDownDurped(contentId);
-        
+
         // replace old values of ud and dd
         setContent(c1 => {
           const c2 = {...c1};
@@ -185,6 +184,7 @@ export function DurpleProvider({children}) {
 
     // get content
     const [ipfsPath, op, ud, dd, timeCreated] = await subRef.current.getContent(contentId);
+    const commentCount = (await subRef.current.getCommentCount(contentId)).toNumber();
     const isUpDurped = await subRef.current.isUpDurped(contentId);
     const isDownDurped = await subRef.current.isDownDurped(contentId);
 
@@ -206,6 +206,7 @@ export function DurpleProvider({children}) {
       contentId,
       isUpDurped,
       isDownDurped,
+      commentCount,
       comments: [],
       timeCreated: timeCreated.toNumber()*1000,
     };
