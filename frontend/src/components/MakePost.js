@@ -1,7 +1,8 @@
 import React,{useState} from "react";
 import {Redirect} from "react-router-dom";
 import '../styles/style.css';
-import { useDurpleContext } from '../hooks/Durple';
+import { useDurpleContext, useSubAddress } from '../hooks/Durple';
+import { useParams } from 'react-router-dom';
 
 export function MakePost() {
   const[redirect, setRedirect] = useState(false)
@@ -12,9 +13,12 @@ export function MakePost() {
   const[content, setContent] = useState("")
   const isImage = true
 
-  if (redirect) {
-    return <Redirect to="/SubDurpleHome"/>
+  const { subAddress } = useParams();
 
+  useSubAddress();
+
+  if (redirect) {
+    return <Redirect to={"/d/"+subAddress}/>
   }
   return(
     <>

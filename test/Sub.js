@@ -9,7 +9,7 @@ describe("Sub contract", function () {
     const factory = await ethers.getContractFactory("Sub");
     [owner] = await ethers.getSigners();
 
-    contract = await factory.deploy();
+    contract = await factory.deploy("test");
     await contract.deployed();
   });
 
@@ -21,6 +21,10 @@ describe("Sub contract", function () {
 
     it("Should have no posts", async function() {
       expect(await contract.getPostCount()).to.equal(0);
+    });
+
+    it("Should have the right name", async function() {
+      expect(await contract.name()).to.equal("test");
     });
 
   });

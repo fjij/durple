@@ -1,6 +1,6 @@
 import React from "react";
 import '../styles/style.css';
-import { useContent } from '../hooks/Durple';
+import { useContent, useSubAddress } from '../hooks/Durple';
 import { useParams } from 'react-router-dom';
 import { Comment } from './Comment';
 import { MakeComment } from './MakeComment';
@@ -11,6 +11,7 @@ import { CommentWidget } from './CommentWidget';
 export function Post() {
   const { contentId } = useParams();
   const content = useContent(contentId);
+  useSubAddress();
 
   return(
     <div className="container mt-4">
