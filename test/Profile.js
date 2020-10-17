@@ -49,33 +49,35 @@ describe("Profile contract", function () {
   describe("Featured Subs", function() {
 
     it("Should be able to add a featured sub", async function() {
-      await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6");
+      await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6", "funny");
       expect(await contract.getFeaturedSubCount()).to.equal(1);
     });
 
     it("Should store the right values in featuredSubs", async function() {
-      await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6");
+      await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6", "funny");
       await expect(await contract.getFeaturedSubCount()).to.equal(1);
-      await contract.addFeaturedSub("0xead9c93b79ae7c1591b1fb5323bd777e86e150d4");
-      const sub1 = (await contract.featuredSubs(0)).toString().toLowerCase();
-      const sub2 = (await contract.featuredSubs(1)).toString().toLowerCase();
-      expect(sub1).to.equal("0xc783df8a850f42e7f7e57013759c285caa701eb6")
-      expect(sub2).to.equal("0xead9c93b79ae7c1591b1fb5323bd777e86e150d4")
+      await contract.addFeaturedSub("0xead9c93b79ae7c1591b1fb5323bd777e86e150d4", "cool");
+      const [sub1, name1] = await contract.getFeaturedSub(0);
+      const [sub2, name2] = await contract.getFeaturedSub(1);
+      expect(sub1.toString().toLowerCase()).to.equal("0xc783df8a850f42e7f7e57013759c285caa701eb6")
+      expect(sub2.toString().toLowerCase()).to.equal("0xead9c93b79ae7c1591b1fb5323bd777e86e150d4")
+      expect(name1).to.equal("funny");
+      expect(name2).to.equal("cool");
     });
 
     it("Should detect if a sub is already featured", async function() {
-      await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6");
-      await expect(contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6"))
+      await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6", "funny");
+      await expect(contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6", "funny"))
       .to.be.revertedWith("SubDurple is already featured");
     });
 
     it("Should only let the owner feature subs", async function() {
-      await expect(contract.connect(addr1).addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6"))
+      await expect(contract.connect(addr1).addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6", "funny"))
       .to.be.revertedWith("Only the owner can feature SubDurples");
     });
 
     it("Should be able to remove a featured sub", async function() {
-      await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6");
+      await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6", "funny");
       await contract.removeFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6");
       expect(await contract.getFeaturedSubCount()).to.equal(0);
     });
@@ -86,7 +88,7 @@ describe("Profile contract", function () {
     });
 
     it("Should only let the owner remove subs", async function() {
-      await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6");
+      await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6", "funny");
       await expect(contract.connect(addr1).removeFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6"))
       .to.be.revertedWith("Only the owner can remove featured SubDurples");
     });

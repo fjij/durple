@@ -5,9 +5,14 @@ import "@nomiclabs/buidler/console.sol";
 
 contract Profile {
 
+    struct Sub {
+      address subAddress;
+      string name;
+    }
+
     string public version = "v1";
     address public owner;
-    address[] public featuredSubs;
+    Sub[] public featuredSubs;
 
     mapping(address => string) username;
     mapping(string => address) userAddress;
@@ -36,19 +41,26 @@ contract Profile {
       return featuredSubs.length;
     }
 
-    function addFeaturedSub(address subAddress) external {
+    function getFeaturedSub(uint256 index) external view returns (address, string memory) {
+      return (featuredSubs[index].subAddress, featuredSubs[index].name);
+    }
+
+    function addFeaturedSub(address subAddress, string calldata name) external {
       require(msg.sender == owner, "Only the owner can feature SubDurples");
-      require(!subExists(featuredSubs, subAddress), "SubDurple is already featured");
-      featuredSubs.push(subAddress);
+      require(!subExists(subAddress), "SubDurple is already featured");
+      Sub memory temp;
+      temp.subAddress = subAddress;
+      temp.name = name;
+      featuredSubs.push(temp);
     }
 
     function usernameExists(string memory myUsername) public view returns (bool) {
       return userAddress[myUsername] != address(0);
     }
 
-    function subExists(address[] memory subArray, address subAddress) public pure returns (bool) {
-      for (uint i = 0; i < subArray.length; i++) {
-        if (subArray[i] == subAddress) {
+    function subExists(address subAddress) public view returns (bool) {
+      for (uint i = 0; i < featuredSubs.length; i++) {
+        if (featuredSubs[i].subAddress == subAddress) {
           return true;
         }
       }
@@ -57,9 +69,9 @@ contract Profile {
 
     function removeFeaturedSub(address subAddress) external {
       require(msg.sender == owner, "Only the owner can remove featured SubDurples");
-      require(subExists(featuredSubs, subAddress), "SubDurple is not featured");
+      require(subExists(subAddress), "SubDurple is not featured");
       for (uint i = 0; i < featuredSubs.length; i++) {
-        if (featuredSubs[i] == subAddress) {
+        if (featuredSubs[i].subAddress == subAddress) {
           for (uint j = i; j < featuredSubs.length-1; j++){
               featuredSubs[j] = featuredSubs[j+1];
           }
