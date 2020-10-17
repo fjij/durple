@@ -7,13 +7,45 @@ import { MakePost } from "./MakePost";
 import { Post } from "./Post";
 import { ConnectWalletBtn } from "./ConnectWalletBtn";
 import logo from '../assets/logo.ico'
+import {useSubAddress, useSubData, useDurpleContext} from '../hooks/Durple';
 //react router
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  useParams
 } from "react-router-dom";
+
+function Navbar() {
+  const {subAddress} = useParams();
+  const durple = useDurpleContext();
+  useSubAddress();
+  const subData = useSubData();
+  let subname = subAddress;
+  if (subData) subname = subData.name;
+  return (
+    <nav className="navbar navbar-expand-md navbar-light navbar-custom nav-bot-pad">
+    <img src={logo} style={{width:"30px", margin:"10px"}} className="img-custom" alt="logo"></img>
+    <a className="navbar-brand" href="/">Durple</a>
+    <button type="button" className="navbar-toggler" data-toggle="collapse" data-target="#navbarContent">
+      <span className="navbar-toggler-icon"></span>
+    </button>
+    <div className="collapse navbar-collapse" id="navbarContent">
+        <div className="navbar-nav">
+          {subAddress?<>
+          <Link className="nav-item nav-link nav-brand" to={"/d/"+subAddress}>d/{subname}</Link>
+          {durple.selectedAddress?
+            <Link className=" nav-item nav-link" to={"/d/"+subAddress+"/post"}>New Post</Link>
+          :<></>}
+          </>:<></>}
+
+          <ConnectWalletBtn />
+        </div>
+    </div>
+    </nav>
+  )
+}
 
 export function Durple() {
   return (
@@ -21,29 +53,21 @@ export function Durple() {
     <div >
     <Router>
       <div>
-        <nav className="navbar navbar-expand-md navbar-light navbar-custom nav-bot-pad">
-        <img src={logo} style={{width:"30px", margin:"10px"}} className="img-custom" alt="logo"></img>
-        <a className="navbar-brand" href="/">Durple</a>
-        <button type="button" className="navbar-toggler" data-toggle="collapse" data-target="#navbarContent">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarContent">
-            <div className="navbar-nav">
-              <ConnectWalletBtn />
-            </div>
-        </div>
-        </nav>
         <Switch>
           <Route path="/d/:subAddress/Post">
+            <Navbar />
             <MakePost />
           </Route>
           <Route path="/d/:subAddress/:contentId">
+            <Navbar />
             <Post />
           </Route>
           <Route path="/d/:subAddress">
+            <Navbar />
             <SubDurpleHome />
           </Route>
           <Route path="/">
+            <Navbar />
             <About />
           </Route>
         </Switch>
