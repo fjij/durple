@@ -11,15 +11,16 @@ export function SubDurple() {
   if (!subData)
     return <Loading />
 
-  const sortedPosts = [...subData.posts]
-  sortedPosts.sort((a, b) => b.hotness - a.hotness)
+  const sortedPosts = subData.posts?[...subData.posts]:undefined;
+  if (sortedPosts)
+    sortedPosts.sort((a, b) => b.hotness - a.hotness)
 
   return (
     <>
     <div className="container text-center">
       <h1 className="subTitle">d/{subData.name}</h1>
     </div>
-    <Cards posts={subData.posts}/>
+    <Cards posts={sortedPosts}/>
     </>
   )
 }
