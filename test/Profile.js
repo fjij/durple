@@ -4,10 +4,11 @@ const { expect } = require("chai");
 describe("Profile contract", function () {
   let contract;
   let owner;
+  let addr1;
 
   beforeEach(async function () {
     const factory = await ethers.getContractFactory("Profile");
-    [owner] = await ethers.getSigners();
+    [owner, addr1] = await ethers.getSigners();
 
     contract = await factory.deploy();
     await contract.deployed();
@@ -58,6 +59,11 @@ describe("Profile contract", function () {
       .to.be.revertedWith("SubDurple is already featured");
     });
 
+    it("Should only let the owner feature subs", async function() {
+      await expect(contract.connect(addr1).addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6"))
+      .to.be.revertedWith("Only the owner can feature SubDurples");
+    });
+
     it("Should be able to remove a featured sub", async function() {
       await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6");
       await contract.removeFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6");
@@ -67,6 +73,12 @@ describe("Profile contract", function () {
     it("Should detect if a sub isn't featured when you try to remove one", async function() {
       await expect(contract.removeFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6"))
       .to.be.revertedWith("SubDurple is not featured");
+    });
+
+    it("Should only let the owner remove subs", async function() {
+      await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6");
+      await expect(contract.connect(addr1).removeFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6"))
+      .to.be.revertedWith("Only the owner can remove featured SubDurples");
     });
 
   });

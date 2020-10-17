@@ -37,6 +37,7 @@ contract Profile {
     }
 
     function addFeaturedSub(address subAddress) external {
+      require(msg.sender == owner, "Only the owner can feature SubDurples");
       require(!subExists(featuredSubs, subAddress), "SubDurple is already featured");
       featuredSubs.push(subAddress);
     }
@@ -55,6 +56,7 @@ contract Profile {
     }
 
     function removeFeaturedSub(address subAddress) external {
+      require(msg.sender == owner, "Only the owner can remove featured SubDurples");
       require(subExists(featuredSubs, subAddress), "SubDurple is not featured");
       for (uint i = 0; i < featuredSubs.length; i++) {
         if (featuredSubs[i] == subAddress) {
