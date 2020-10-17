@@ -11,6 +11,9 @@ export function SubDurple() {
   if (!subData)
     return <Loading />
 
+  const sortedPosts = [...subData.posts]
+  sortedPosts.sort((a, b) => b.hotness - a.hotness)
+
   return (
     <>
     <div className="container text-center">
