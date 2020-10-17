@@ -23,14 +23,12 @@ export function Durple() {
       <div>
         <nav className="navbar navbar-expand-md navbar-light navbar-custom nav-bot-pad">
         <img src={logo} style={{width:"30px", margin:"10px"}} className="img-custom" alt="logo"></img>
-        <a className="navbar-brand" href="#">Durple</a>
+        <a className="navbar-brand" href="/">Durple</a>
         <button type="button" className="navbar-toggler" data-toggle="collapse" data-target="#navbarContent">
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarContent">
             <div className="navbar-nav">
-              <Link to="/" className="nav-item nav-link">About</Link>
-
               <ConnectWalletBtn />
             </div>
         </div>
