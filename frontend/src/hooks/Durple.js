@@ -68,6 +68,7 @@ export function useContent(contentId) {
 
 export function DurpleProvider({children}) {
   // STATE
+  const [currentSubAddress, setCurrentSubAddress] = useState(undefined);
   const [subData, setSubData] = useState(undefined);
   const [content, setContent] = useState({});
   const [selectedAddress, setSelectedAddress] = useState(undefined);
@@ -81,7 +82,7 @@ export function DurpleProvider({children}) {
   // Initialization effect
   useEffect(() => {
     intializeEthers();
-  }, [selectedAddress]);
+  }, [selectedAddress, currentSubAddress]);
 
   useInterval(() => getSubData(), 1000);
 
@@ -122,13 +123,17 @@ export function DurpleProvider({children}) {
       providerRef.current = new ethers.providers.JsonRpcProvider({url: "http://localhost:8545", allowInsecure: true})
     }
 
-    // When, we initialize the contract using that provider and the token's
-    // artifact. You can do this same thing with your contracts.
-    subRef.current = new ethers.Contract(
-      contractAddress.Sub,
-      SubArtifact.abi,
-      providerRef.current.getSigner(0)
-    );
+    if (currentSubAddress) {
+      // When, we initialize the contract using that provider and the token's
+      // artifact. You can do this same thing with your contracts.
+      subRef.current = new ethers.Contract(
+        currentSubAddress,
+        SubArtifact.abi,
+        providerRef.current.getSigner(0)
+      );
+    } else {
+      subRef.current = undefined;
+    }
   }
 
   async function getContent(contentId){
@@ -225,6 +230,8 @@ export function DurpleProvider({children}) {
   }
 
   async function getSubData() {
+
+    if (!subRef.current) return;
 
     const postCount = (await subRef.current.getPostCount()).toNumber();
     let prevPostCount = subData? subData.postCount: 0;
@@ -372,6 +379,9 @@ export function DurpleProvider({children}) {
     upDurp,
     downDurp,
     undoDurp,
+
+    currentSubAddress,
+    setCurrentSubAddress,
   }
 
   return (<DurpleContext.Provider value={contextValue}>{children}</DurpleContext.Provider>)
