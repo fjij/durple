@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useAlert } from 'react-alert';
 
 import SubArtifact from "../contracts/Sub.json";
+import ProfileArtifact from "../contracts/Profile.json";
 import contractAddress from "../contracts/contract-address.json";
 
 import { useInterval } from './useInterval';
@@ -20,25 +21,7 @@ const BUIDLER_EVM_NETWORK_ID = '31337';
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 
-const DurpleContext = createContext({
-  subData: {
-    name: "the durple zone",
-    postCount: 0,
-    posts: [],
-  },
-  selectedAddress: undefined,
-  txBeingSent: undefined,
-  transactionError: undefined,
-  networkError: undefined,
-
-  connectWallet: () => {},
-  dismissNetworkError: () => {},
-  dismissTransactionError: () => {},
-  getRpcErrorMessage: () => {},
-
-  makePost: async () => {},
-  getContent: () => {},
-});
+const DurpleContext = createContext({ });
 
 export function useSubAddress() {
   const durple = useDurpleContext();
@@ -57,6 +40,11 @@ export function useDurpleContext() {
 export function useSubData() {
   const durple = useDurpleContext();
   return durple.subData;
+}
+
+export function useProfileData() {
+  const durple = useDurpleContext();
+  return durple.profileData;
 }
 
 export function usePost(contentId) {
@@ -82,6 +70,7 @@ export function DurpleProvider({children}) {
   // STATE
   const [currentSubAddress, setCurrentSubAddress] = useState(undefined);
   const [subData, setSubData] = useState(undefined);
+  const [profileData, setProfileData] = useState(undefined);
   const [content, setContent] = useState({});
   const [selectedAddress, setSelectedAddress] = useState(undefined);
   // The ID about transactions being sent, and any possible error with them
@@ -99,6 +88,7 @@ export function DurpleProvider({children}) {
   }, [selectedAddress, currentSubAddress]);
 
   useInterval(() => getSubData(), 1000);
+  useInterval(() => getProfileData(), 1000);
 
   // Error listners
   useEffect(() => {
@@ -119,6 +109,7 @@ export function DurpleProvider({children}) {
 
   const providerRef = useRef(undefined);
   const subRef = useRef(undefined);
+  const profileRef = useRef(undefined);
 
   async function connectWallet() {
     const [selectedAddress] = await window.ethereum.enable();
@@ -150,6 +141,16 @@ export function DurpleProvider({children}) {
     } else {
       providerRef.current = new ethers.providers.JsonRpcProvider({url: "http://localhost:8545", allowInsecure: true})
     }
+    try {
+      profileRef.current = new ethers.Contract(
+        contractAddress.Profile,
+        ProfileArtifact.abi,
+        providerRef.current.getSigner(0)
+      );
+    } catch(e) {
+      setNetworkError({message:"Durple profile error."});
+      console.error(e);
+    }
 
     if (currentSubAddress) {
       // When, we initialize the contract using that provider and the token's
@@ -164,6 +165,7 @@ export function DurpleProvider({children}) {
         setNetworkError({message:"Invalid sub address!"});
         console.error(e);
       }
+      setContent({})
     } else {
       subRef.current = undefined;
     }
@@ -292,6 +294,24 @@ export function DurpleProvider({children}) {
     });
   }
 
+  async function getProfileData() {
+
+    if (!profileRef.current) return;
+    if (profileData) return;
+
+    const featuredCount = (await profileRef.current.getFeaturedSubCount()).toNumber();
+    const featured = [];
+
+    for(let i = 0; i < featuredCount; i ++) {
+      const [address, name] = await profileRef.current.getFeaturedSub(i);
+      featured.push({address, name});
+    }
+
+    setProfileData(profileData => {
+      return { ...profileData, featured};
+    });
+  }
+
   async function attemptTransaction(fn) {
     try {
 
@@ -376,7 +396,10 @@ export function DurpleProvider({children}) {
   }
 
   function resetState() {
+    setCurrentSubAddress(undefined);
     setSubData(undefined);
+    setProfileData(undefined);
+    setContent({});
     setSelectedAddress(undefined);
     setTxBeingSent(undefined);
     setTransactionError(undefined);
@@ -396,6 +419,7 @@ export function DurpleProvider({children}) {
 
   const contextValue = {
     subData,
+    profileData,
     selectedAddress,
     txBeingSent,
     transactionError,

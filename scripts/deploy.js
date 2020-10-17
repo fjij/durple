@@ -34,6 +34,9 @@ async function main() {
   const ProfileFactory = await ethers.getContractFactory("Profile");
   const profileContract = await ProfileFactory.deploy();
   await profileContract.deployed();
+  for (let i = 0; i < SubAddresses.length; i ++) {
+    await profileContract.addFeaturedSub(SubAddresses[i], subNames[i]);
+  }
   console.log("Address for Profile:", profileContract.address);
 
   saveFrontendFiles(profileContract);
