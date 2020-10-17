@@ -160,7 +160,6 @@ export function DurpleProvider({children}) {
         const [ipfsPath, op, ud, dd, timeCreated] = await subRef.current.getContent(contentId);
         const isUpDurped = await subRef.current.isUpDurped(contentId);
         const isDownDurped = await subRef.current.isDownDurped(contentId);
-        const hotness = (await subRef.current.getHotness(contentId)).toNumber();
 
         // replace old values of ud and dd
         setContent(c1 => {
@@ -188,6 +187,7 @@ export function DurpleProvider({children}) {
     const commentCount = (await subRef.current.getCommentCount(contentId)).toNumber();
     const isUpDurped = await subRef.current.isUpDurped(contentId);
     const isDownDurped = await subRef.current.isDownDurped(contentId);
+    const hotness = (await subRef.current.getHotness(contentId)).toNumber();
 
     // resolve ipfs path
     let str = ""
@@ -210,6 +210,7 @@ export function DurpleProvider({children}) {
       commentCount,
       comments: [],
       timeCreated: timeCreated.toNumber()*1000,
+      hotness
     };
 
     // add this to the map
