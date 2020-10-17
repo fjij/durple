@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import '../styles/style.css';
 import { Cards } from "./Cards";
 import { About } from "./About";
+import { SubDurple } from "./SubDurple";
 import { SubDurpleHome } from "./SubDurpleHome";
 import { MakePost } from "./MakePost";
 import { Post } from "./Post";
@@ -39,7 +40,7 @@ function Navbar() {
             <Link className=" nav-item nav-link" to={"/d/"+subAddress+"/post"}>New Post</Link>
           :<></>}
           </>:<></>}
-
+          {/*<Link className="nav-item nav-link" to="/SubDurpleHome">SubDurpleHome</Link>*/}
           <ConnectWalletBtn />
         </div>
     </div>
@@ -64,8 +65,12 @@ export function Durple() {
           </Route>
           <Route path="/d/:subAddress">
             <Navbar />
-            <SubDurpleHome />
+            <SubDurple />
           </Route>
+          /*<Route path="/SubDurpleHome">
+            <Navbar />
+            <SubDurpleHome />
+          </Route>*/
           <Route path="/">
             <Navbar />
             <About />

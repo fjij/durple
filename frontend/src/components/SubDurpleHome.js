@@ -4,6 +4,10 @@ import { SubDurple } from "./SubDurple";
 
 export function SubDurpleHome() {
   return (
-  <SubDurple />
+  <>
+  <div className="text-center">
+  <button class="btn btn-primary m-auto mt-2">funny</button>
+  </div>
+  </>
   )
 }
