@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect, createContext, useContext } from "react";
 import { ethers } from "ethers";
 import { useParams } from 'react-router-dom';
+import { useAlert } from 'react-alert';
 
 import SubArtifact from "../contracts/Sub.json";
 import contractAddress from "../contracts/contract-address.json";
@@ -41,7 +42,7 @@ const DurpleContext = createContext({
 
 export function useSubAddress() {
   const durple = useDurpleContext();
-  
+
   const { subAddress } = useParams();
 
   useEffect(() => {
@@ -88,6 +89,8 @@ export function DurpleProvider({children}) {
   const [transactionError, setTransactionError] = useState(undefined);
   const [networkError, setNetworkError] = useState(undefined);
 
+  const alert = useAlert();
+
   // EFFECTS
 
   // Initialization effect
@@ -97,6 +100,20 @@ export function DurpleProvider({children}) {
 
   useInterval(() => getSubData(), 1000);
 
+  // Error listners
+  useEffect(() => {
+    if (transactionError) {
+      const message = getRpcErrorMessage(transactionError);
+      alert.error(message);
+    }
+  }, [transactionError]);
+
+  useEffect(() => {
+    if (networkError) {
+      const message = getRpcErrorMessage(networkError);
+      alert.error(message);
+    }
+  }, [networkError]);
 
   // REFS
 
@@ -137,11 +154,16 @@ export function DurpleProvider({children}) {
     if (currentSubAddress) {
       // When, we initialize the contract using that provider and the token's
       // artifact. You can do this same thing with your contracts.
-      subRef.current = new ethers.Contract(
-        currentSubAddress,
-        SubArtifact.abi,
-        providerRef.current.getSigner(0)
-      );
+      try {
+        subRef.current = new ethers.Contract(
+          currentSubAddress,
+          SubArtifact.abi,
+          providerRef.current.getSigner(0)
+        );
+      } catch(e) {
+        setNetworkError({message:"Invalid sub address!"});
+        console.error(e);
+      }
     } else {
       subRef.current = undefined;
     }
