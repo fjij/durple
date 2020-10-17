@@ -25,7 +25,7 @@ export function Comment({contentId}) {
       <div className="card-body">
       <code className="walletColor">{comment?comment.op:<Skeleton width={"20em"}/>}</code>
         <p>{comment?comment.data.text:<Skeleton count={3}/>}</p>
-        <div className="d-flex flex-row p-0">
+        <div className="d-flex flex-row p-0 mt-2">
         <Voter contentId={contentId}/>
       {/*<CommentWidget contentId={contentId}/>*/}
         </div>
