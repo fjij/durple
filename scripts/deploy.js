@@ -20,10 +20,25 @@ async function main() {
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
   const SubFactory = await ethers.getContractFactory("Sub");
-  const Sub = await SubFactory.deploy();
+  const Sub = await SubFactory.deploy("funny");
   await Sub.deployed();
 
   console.log("Sub address:", Sub.address);
+
+  const Sub1 = await SubFactory.deploy("gaming");
+  await Sub1.deployed();
+
+  console.log("Sub address:", Sub1.address);
+
+  const Sub2 = await SubFactory.deploy("tidu");
+  await Sub2.deployed();
+
+  console.log("Sub address:", Sub2.address);
+
+  const Sub3 = await SubFactory.deploy("askdurple");
+  await Sub3.deployed();
+
+  console.log("Sub address:", Sub3.address);
 
   // We also save the contract's artifacts and address in the frontend directory
   saveFrontendFiles(Sub);
