@@ -17,7 +17,7 @@ contract Sub {
     }
 
 
-    string public version = "v1";
+    string public version = "DurpleV1";
     string public name;
     Content[] content;
     uint256[] postIndices; // array that contains the index addresses of posts in content[]
