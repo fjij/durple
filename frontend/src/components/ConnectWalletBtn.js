@@ -6,9 +6,9 @@ export function ConnectWalletBtn() {
   const durple = useDurpleContext();
   const localStorage = window.localStorage;
   const shouldAutoConnect = localStorage.getItem("shouldAutoConnect");
-
+  const noWalletDetected = (window.ethereum === undefined)
   useEffect(() => {
-    if (shouldAutoConnect) {
+    if (shouldAutoConnect && !noWalletDetected) {
       durple.connectWallet();
     }
   }, [shouldAutoConnect]);

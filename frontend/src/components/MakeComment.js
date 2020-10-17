@@ -8,7 +8,9 @@ import Skeleton from 'react-loading-skeleton';
 export function MakeComment({contentId, disabled}) {
   const durple = useDurpleContext();
   const [text, setText] = useState("");
-
+  if (!durple.selectedAddress) {
+    return "";
+  }
 
   return(
       <div className="card mt-4">
