@@ -25,7 +25,7 @@ export function MakeComment({contentId, disabled}) {
               <textarea className="form-control" value={text} onChange={e => setText(e.target.value)} />
             </div>
 
-            <input class="btn btn-primary" type="submit" value="Submit" disabled={disabled}></input>
+            <input className="btn btn-primary" type="submit" value="Submit" disabled={disabled}></input>
           </form>
         </div>
       </div>
