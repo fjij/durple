@@ -45,7 +45,6 @@ export function SingleCard({contentId}) {
           <div className="d-flex flex-row p-0">
               <Voter contentId={contentId}/>
               <CommentWidget contentId={contentId}/>
-              {post?post.hotness:""}
           </div>
         </div>
       </div>
