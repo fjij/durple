@@ -18,14 +18,15 @@ contract Sub {
 
 
     string public version = "v1";
-    string public name = "funny";
+    string public name;
     Content[] content;
     uint256[] postIndices; // array that contains the index addresses of posts in content[]
 
     address public owner;
 
-    constructor() public {
+    constructor(string memory subName) public {
       owner = msg.sender;
+      name = subName;
     }
 
 // makes a post and pushes it to the end of content. Also adds the index of that
