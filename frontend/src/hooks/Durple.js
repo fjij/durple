@@ -238,13 +238,18 @@ export function DurpleProvider({children}) {
 
     setSubData(subData => {return {...subData, postCount};})
 
+    const newPosts = [];
+
     for(let i = prevPostCount; i < postCount; i ++) {
       const contentId = await subRef.current.getPostIndex(i);
-      setSubData(subData => {
-        const prevPosts = subData.posts? subData.posts: [];
-        return { ...subData, posts: [...prevPosts, contentId]};
-      });
+      const hotness = (await subRef.current.getHotness(contentId)).toNumber();
+      newPosts.push({contentId, hotness})
     }
+
+    setSubData(subData => {
+      const prevPosts = subData.posts? subData.posts: [];
+      return { ...subData, posts: [...prevPosts, ...newPosts]};
+    });
   }
 
   async function attemptTransaction(fn) {

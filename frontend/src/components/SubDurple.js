@@ -20,7 +20,7 @@ export function SubDurple() {
     <div className="container text-center">
       <h1 className="subTitle">d/{subData.name}</h1>
     </div>
-    <Cards posts={sortedPosts}/>
+    <Cards posts={sortedPosts?sortedPosts.map(p => p.contentId):[]}/>
     </>
   )
 }
