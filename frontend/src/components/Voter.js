@@ -14,29 +14,32 @@ export function Voter({contentId}) {
     isDownDurped = content.isDownDurped;
   }
 
-  function upDurp() {
+  function upDurp(e) {
     if (!isUpDurped) {
       durple.upDurp(contentId);
     } else {
       durple.undoDurp(contentId);
     }
+    e.stopPropagation()
   }
 
-  function downDurp() {
+  function downDurp(e) {
     if (!isDownDurped) {
       durple.downDurp(contentId);
     } else {
       durple.undoDurp(contentId);
     }
+    e.stopPropagation()
   }
 
-  return (<div>
-    <button className="btn btn-sm" onClick={upDurp}>
+  return (<div className= "d-flex flex-row p-0 mr-3">
+    <div className="mr-2" onClick={upDurp}>
       <FaArrowAltCircleUp color={isUpDurped?"purple":"grey"}/>
-    </button>
-    <small><b>{content?<>{content.ud - content.dd}</>:<Skeleton width={20}/>}</b></small>
-    <button className="btn btn-sm" onClick={downDurp}>
+    </div>
+    <b>{content?<>{content.ud - content.dd}</>:<Skeleton width={20}/>}</b>
+    <div className="ml-2" onClick={downDurp}>
       <FaArrowAltCircleDown color={isDownDurped?"orange":"grey"}/>
-    </button>
-  </div>);
+    </div>
+  </div>
+);
 }

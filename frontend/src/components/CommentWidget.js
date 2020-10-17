@@ -10,6 +10,6 @@ export function CommentWidget({contentId}){
   return (<div><b>
     {content
       ?<Link className="text-secondary" to={"/Post/" + contentId.toString()}><FaCommentAlt />{" "}{content.commentCount}</Link>
-      :<Skeleton />}
+      :<Skeleton width={30} />}
   </b></div>);
 }

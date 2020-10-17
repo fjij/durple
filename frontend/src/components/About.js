@@ -8,7 +8,7 @@ export function About() {
   <dir className="aboutCenter">
     <img src={logo}></img>
     <h1>The Future of Forums</h1>
-    <h5>Durple is the future of the internet. Updurp or down durp. </h5>
+    <h5>Durple is the future of the internet. Updurp or Downdurp. </h5>
     <h5>Uplurkle or Lurkle. Join now and be a Durple.</h5>
   </dir>
   </dir>

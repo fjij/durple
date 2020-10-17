@@ -23,11 +23,17 @@ export function Comment({contentId}) {
   return(
     <div className="card mt-4">
       <div className="card-body">
-        <p>{comment?comment.data.text:<Skeleton count={5}/>}</p>
-        <code>{comment?comment.op:<Skeleton width={"20em"}/>}</code>
+      <code className="walletColor">{comment?comment.op:<Skeleton width={"20em"}/>}</code>
+        <p>{comment?comment.data.text:<Skeleton count={3}/>}</p>
+        <div className="d-flex flex-row p-0">
         <Voter contentId={contentId}/>
-        <CommentWidget contentId={contentId}/>
+      {/*<CommentWidget contentId={contentId}/>*/}
+        </div>
       </div>
     </div>
   )
 }
+
+/*
+<div className="d-flex flex-row p-0">
+*/

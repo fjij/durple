@@ -30,8 +30,9 @@ export function Durple() {
         <div className="collapse navbar-collapse" id="navbarContent">
             <div className="navbar-nav">
               <Link to="/SubDurpleHome" className="nav-item nav-link">SubDurpleHome</Link>
-              <Link to="/About" className="nav-item nav-link">About</Link>
               <Link to="/MakePost" className="nav-item nav-link">Post</Link>
+              <Link to="/About" className="nav-item nav-link">About</Link>
+
               <ConnectWalletBtn />
             </div>
         </div>

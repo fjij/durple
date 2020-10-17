@@ -17,7 +17,7 @@ export function Cards({posts}) {
   let currentRow = [];
 
   if (!posts)
-    return <p> No posts yet! </p>;
+    return <p className="text-center mt-5">No Posts Yet</p>;
   for (let i = 0; i < posts.length; i ++) {
     currentRow.push(posts[i]);
     if (currentRow.length >= rowLength) {
