@@ -131,4 +131,14 @@ contract Sub {
       }
     }
 
+// getHotness returns the hotness of a content
+    function getHotness(uint256 index) external view returns (int256) {
+      int256 score = int256(content[index].udurp - content[index].ddurp);
+      int256 age = int256(now) - int256(content[index].timeCreated);
+      if (age > 0) {
+          return (score * 1000000) / age;
+        } else {
+          return 0;
+        }
+    }
 }

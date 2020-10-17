@@ -224,5 +224,11 @@ describe("Sub contract", function () {
       expect(false).to.equal(await contract.isDownDurped(0));
     });
 
+    it("Should produce the right hotness", async function() {
+      await contract.makePost("hash");
+      await contract.upDurp(0);
+      expect(await contract.getHotness(0)).to.equal(500000);
+    });
+
   });
 });
