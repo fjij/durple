@@ -6,12 +6,13 @@ import Skeleton from 'react-loading-skeleton';
 import { DurationToString } from '../utils/time'
 import { CommentWidget } from './CommentWidget';
 import { Voter } from './Voter';
-import {Redirect} from "react-router-dom";
+import {Redirect, useParams} from "react-router-dom";
 
 export function SingleCard({contentId}) {
   const durple = useDurpleContext();
   const post = usePost(contentId);
   const[redirect, setRedirect] = useState(false)
+  const { subAddress } = useParams();
 
   let title = null;
   let text = null;
@@ -28,7 +29,7 @@ export function SingleCard({contentId}) {
   }
 
   if (redirect) {
-    return <Redirect to={"/Post/" + contentId.toString()}/>
+    return <Redirect to={"/d/" + subAddress + "/" + contentId.toString()}/>
   }
 
   return(

@@ -29,26 +29,24 @@ export function Durple() {
         </button>
         <div className="collapse navbar-collapse" id="navbarContent">
             <div className="navbar-nav">
-              <Link to="/SubDurpleHome" className="nav-item nav-link">SubDurpleHome</Link>
-              <Link to="/MakePost" className="nav-item nav-link">Post</Link>
-              <Link to="/About" className="nav-item nav-link">About</Link>
+              <Link to="/" className="nav-item nav-link">About</Link>
 
               <ConnectWalletBtn />
             </div>
         </div>
         </nav>
         <Switch>
-          <Route path="/About">
-            <About />
-          </Route>
-          <Route path="/SubDurpleHome">
-            <SubDurpleHome />
-          </Route>
-          <Route path="/MakePost">
+          <Route path="/d/:subAddress/Post">
             <MakePost />
           </Route>
-          <Route path="/Post/:contentId">
+          <Route path="/d/:subAddress/:contentId">
             <Post />
+          </Route>
+          <Route path="/d/:subAddress">
+            <SubDurpleHome />
+          </Route>
+          <Route path="/">
+            <About />
           </Route>
         </Switch>
       </div>

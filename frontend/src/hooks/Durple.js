@@ -1,6 +1,7 @@
 // Durple Hooks
 import React, { useState, useRef, useEffect, createContext, useContext } from "react";
 import { ethers } from "ethers";
+import { useParams } from 'react-router-dom';
 
 import SubArtifact from "../contracts/Sub.json";
 import contractAddress from "../contracts/contract-address.json";
@@ -37,6 +38,16 @@ const DurpleContext = createContext({
   makePost: async () => {},
   getContent: () => {},
 });
+
+export function useSubAddress() {
+  const durple = useDurpleContext();
+  
+  const { subAddress } = useParams();
+
+  useEffect(() => {
+    durple.setCurrentSubAddress(subAddress);
+  }, [subAddress])
+}
 
 export function useDurpleContext() {
   return useContext(DurpleContext);

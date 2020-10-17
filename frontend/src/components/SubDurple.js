@@ -1,12 +1,15 @@
 import React from "react";
 import '../styles/style.css';
 import { Cards } from "./Cards";
-import { useSubData, useDurpleContext } from "../hooks/Durple";
+import { useSubData, useDurpleContext, useSubAddress } from "../hooks/Durple";
 import { Loading } from "./Loading";
 
 export function SubDurple() {
   const subData = useSubData();
   const durple = useDurpleContext();
+
+  useSubAddress();
+
 
   if (!subData)
     return <Loading />
