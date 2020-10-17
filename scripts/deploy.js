@@ -19,32 +19,27 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
+  const subNames = ["funny", "gaming", "AskDurple", "TIDU"];
+
   const SubFactory = await ethers.getContractFactory("Sub");
-  const Sub = await SubFactory.deploy("funny");
-  await Sub.deployed();
+  const SubAddresses = []
 
-  console.log("Sub address:", Sub.address);
+  for (let i = 0; i < subNames.length; i ++) {
+    const contract = await SubFactory.deploy(subNames[i]);
+    await contract.deployed();
+    console.log("Address for d/"+subNames[i]+":", contract.address);
+    SubAddresses.push(contract.address);
+  }
 
-  const Sub1 = await SubFactory.deploy("gaming");
-  await Sub1.deployed();
+  const ProfileFactory = await ethers.getContractFactory("Profile");
+  const profileContract = await ProfileFactory.deploy();
+  await profileContract.deployed();
+  console.log("Address for Profile:", profileContract.address);
 
-  console.log("Sub address:", Sub1.address);
-
-  const Sub2 = await SubFactory.deploy("tidu");
-  await Sub2.deployed();
-
-  console.log("Sub address:", Sub2.address);
-
-  const Sub3 = await SubFactory.deploy("askdurple");
-  await Sub3.deployed();
-
-  console.log("Sub address:", Sub3.address);
-
-  // We also save the contract's artifacts and address in the frontend directory
-  saveFrontendFiles(Sub);
+  saveFrontendFiles(profileContract);
 }
 
-function saveFrontendFiles(contract) {
+function saveFrontendFiles(profileContract) {
   const fs = require("fs");
   const contractsDir = __dirname + "/../frontend/src/contracts";
 
@@ -54,12 +49,18 @@ function saveFrontendFiles(contract) {
 
   fs.writeFileSync(
     contractsDir + "/contract-address.json",
-    JSON.stringify({ Sub: contract.address }, undefined, 2)
+    JSON.stringify({ Profile: profileContract.address }, undefined, 2)
   );
 
+  // Copy ABI artifacts for contracts
   fs.copyFileSync(
     __dirname + "/../artifacts/Sub.json",
     contractsDir + "/Sub.json"
+  );
+
+  fs.copyFileSync(
+    __dirname + "/../artifacts/Profile.json",
+    contractsDir + "/Profile.json"
   );
 }
 
