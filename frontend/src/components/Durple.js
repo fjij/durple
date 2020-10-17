@@ -9,6 +9,7 @@ import { Post } from "./Post";
 import { ConnectWalletBtn } from "./ConnectWalletBtn";
 import logo from '../assets/logo.ico'
 import {useSubAddress, useSubData, useDurpleContext} from '../hooks/Durple';
+import Skeleton from 'react-loading-skeleton';
 //react router
 import {
   BrowserRouter as Router,
@@ -23,8 +24,8 @@ function Navbar() {
   const durple = useDurpleContext();
   useSubAddress();
   const subData = useSubData();
-  let subname = subAddress;
-  if (subData) subname = subData.name;
+  let subText = undefined;
+  if (subData) subText = "d/"+subData.name;
   return (
     <nav className="navbar navbar-expand-md navbar-light navbar-custom nav-bot-pad">
     <img src={logo} style={{width:"30px", margin:"10px"}} className="img-custom" alt="logo"></img>
@@ -35,7 +36,7 @@ function Navbar() {
     <div className="collapse navbar-collapse" id="navbarContent">
         <div className="navbar-nav">
           {subAddress?<>
-          <Link className="nav-item nav-link nav-brand" to={"/d/"+subAddress}>d/{subname}</Link>
+          <Link className="nav-item nav-link nav-brand" to={"/d/"+subAddress}>{subText?subText:<Skeleton width={60}/>}</Link>
           {durple.selectedAddress?
             <Link className=" nav-item nav-link" to={"/d/"+subAddress+"/post"}>New Post</Link>
           :<></>}
