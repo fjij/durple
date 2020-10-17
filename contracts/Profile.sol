@@ -7,7 +7,7 @@ contract Profile {
 
     string public version = "v1";
     address public owner;
-    address[] featuredSubs;
+    address[] public featuredSubs;
 
     mapping(address => string) username;
     mapping(string => address) userAddress;

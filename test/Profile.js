@@ -53,6 +53,16 @@ describe("Profile contract", function () {
       expect(await contract.getFeaturedSubCount()).to.equal(1);
     });
 
+    it("Should store the right values in featuredSubs", async function() {
+      await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6");
+      await expect(await contract.getFeaturedSubCount()).to.equal(1);
+      await contract.addFeaturedSub("0xead9c93b79ae7c1591b1fb5323bd777e86e150d4");
+      const sub1 = (await contract.featuredSubs(0)).toString().toLowerCase();
+      const sub2 = (await contract.featuredSubs(1)).toString().toLowerCase();
+      expect(sub1).to.equal("0xc783df8a850f42e7f7e57013759c285caa701eb6")
+      expect(sub2).to.equal("0xead9c93b79ae7c1591b1fb5323bd777e86e150d4")
+    });
+
     it("Should detect if a sub is already featured", async function() {
       await contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6");
       await expect(contract.addFeaturedSub("0xc783df8a850f42e7f7e57013759c285caa701eb6"))
