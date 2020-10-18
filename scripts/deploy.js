@@ -31,12 +31,18 @@ async function main() {
     SubAddresses.push(contract.address);
   }
 
+  const OfficialDurpleSubFactory = await ethers.getContractFactory("OfficialDurpleSub");
+  const officialDurpleSubContract = await OfficialDurpleSubFactory.deploy("durple");
+  await officialDurpleSubContract.deployed();
+
+  // Deploy Profile Contract
   const ProfileFactory = await ethers.getContractFactory("Profile");
   const profileContract = await ProfileFactory.deploy();
   await profileContract.deployed();
   for (let i = 0; i < SubAddresses.length; i ++) {
     await profileContract.addFeaturedSub(SubAddresses[i], subNames[i]);
   }
+  await profileContract.addFeaturedSub(officialDurpleSubContract.address, "durple");
   console.log("Address for Profile:", profileContract.address);
 
   saveFrontendFiles(profileContract);
