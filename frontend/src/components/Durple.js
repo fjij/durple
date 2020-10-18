@@ -1,9 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import '../styles/style.css';
-import { Cards } from "./Cards";
 import { About } from "./About";
 import { SubDurple } from "./SubDurple";
-import { SubDurpleHome } from "./SubDurpleHome";
 import { MakePost } from "./MakePost";
 import { Post } from "./Post";
 import { ConnectWalletBtn } from "./ConnectWalletBtn";
@@ -69,10 +67,6 @@ export function Durple() {
             <Navbar />
             <SubDurple />
           </Route>
-          /*<Route path="/SubDurpleHome">
-            <Navbar />
-            <SubDurpleHome />
-          </Route>*/
           <Route path="/">
             <Navbar />
             <About />

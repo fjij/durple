@@ -1,7 +1,6 @@
 import React from "react";
 import '../styles/style.css';
 import { SingleCard } from "./SingleCard";
-import { Loading } from './Loading';
 
 function Row({posts}) {
   return (

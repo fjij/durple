@@ -37,7 +37,7 @@ export function About() {
   <>
   <div className="container-fluid">
   <div className="aboutCenter">
-    <img src={logo}></img>
+    <img src={logo} alt="Durple Logo"></img>
     <h1 className="mt-4">The Future of Forums</h1>
     <h5>Durple is the future of the internet. Updurp or Downdurp. </h5>
     <h5>Uplurkle or Lurkle. Join now and be a Durple.</h5>

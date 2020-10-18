@@ -7,10 +7,11 @@ import { useAlert } from 'react-alert';
 import SubArtifact from "../contracts/Sub.json";
 import ProfileArtifact from "../contracts/Profile.json";
 import contractAddress from "../contracts/contract-address.json";
+import { utf8ByteArrayToString } from 'utf8-string-bytes';
 
 import { useInterval } from './useInterval';
 
-import { ipfsConfig, rpcConfig, BUIDLER_EVM_NETWORK_ID, defaultProviderName } from './config';
+import { ipfsConfig, rpcConfig, BUIDLER_EVM_NETWORK_ID} from './config';
 
 const ipfsAPI = require('ipfs-http-client');
 const ipfs = ipfsAPI(ipfsConfig);
@@ -28,7 +29,7 @@ export function useSubAddress() {
 
   useEffect(() => {
     durple.setCurrentSubAddress(subAddress);
-  }, [subAddress])
+  }, [subAddress, durple])
 }
 
 export function useDurpleContext() {
@@ -82,7 +83,7 @@ export function DurpleProvider({children}) {
 
   // Initialization effect
   useEffect(() => {
-    intializeEthers();
+    initializeEthers();
   }, [selectedAddress, currentSubAddress]);
 
   useInterval(() => getSubData(), 1000);
@@ -94,14 +95,14 @@ export function DurpleProvider({children}) {
       const message = getRpcErrorMessage(transactionError);
       alert.error(message);
     }
-  }, [transactionError]);
+  }, [transactionError, alert]);
 
   useEffect(() => {
     if (networkError) {
       const message = getRpcErrorMessage(networkError);
       alert.error(message);
     }
-  }, [networkError]);
+  }, [networkError, alert]);
 
   // REFS
 
@@ -132,16 +133,11 @@ export function DurpleProvider({children}) {
     });
   }
 
-  async function intializeEthers() {
-    // We first initialize ethers by creating a provider using window.ethereum
+  async function initializeEthers() {
     if (selectedAddress) {
       providerRef.current = new ethers.providers.Web3Provider(window.ethereum);
     } else {
-      //if (defaultProviderName) {
-        //providerRef.current = ethers.getDefaultProvider(defaultProviderName);
-      //} else {
-        providerRef.current = new ethers.providers.JsonRpcProvider(rpcConfig)
-      //}
+      providerRef.current = new ethers.providers.JsonRpcProvider(rpcConfig)
     }
     try {
       profileRef.current = new ethers.Contract(
@@ -203,7 +199,7 @@ export function DurpleProvider({children}) {
 
       // Check to see if any new durps
       async function fetchDurps() {
-        const [ipfsPath, op, ud, dd, timeCreated] = await subRef.current.getContent(contentId);
+        const [, , ud, dd, ] = await subRef.current.getContent(contentId);
         const isUpDurped = await subRef.current.isUpDurped(contentId);
         const isDownDurped = await subRef.current.isDownDurped(contentId);
 
@@ -240,9 +236,7 @@ export function DurpleProvider({children}) {
     // resolve ipfs path
     let str = ""
     for await (const chunk of ipfs.cat(ipfsPath)) {
-      for (const char of chunk) {
-        str += String.fromCharCode(char);
-      }
+      str += utf8ByteArrayToString(chunk);
     }
 
     // create content object

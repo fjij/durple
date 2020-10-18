@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import '../styles/style.css';
 import { useDurpleContext } from '../hooks/Durple';
-import { useParams } from 'react-router-dom';
-import { Comment } from './Comment';
-import Skeleton from 'react-loading-skeleton';
 
 export function MakeComment({contentId, disabled}) {
   const durple = useDurpleContext();
@@ -19,7 +16,7 @@ export function MakeComment({contentId, disabled}) {
           <h5>Comment</h5>
           <form className="mt-4" onSubmit={async (e) => {
             e.preventDefault();
-            if (text != "") {
+            if (text !== "") {
               setWaiting(true);
               const success = await durple.makeComment(contentId, text);
               setWaiting(false);

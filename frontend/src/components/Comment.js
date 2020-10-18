@@ -3,7 +3,7 @@ import '../styles/style.css';
 import { useComment } from '../hooks/Durple';
 import Skeleton from 'react-loading-skeleton';
 import { Voter } from './Voter'
-import { CommentWidget } from './CommentWidget';
+// import { CommentWidget } from './CommentWidget';
 
 export function CommentPlaceholder(){
   return(
@@ -34,6 +34,3 @@ export function Comment({contentId}) {
   )
 }
 
-/*
-<div className="d-flex flex-row p-0">
-*/
