@@ -10,15 +10,11 @@ import contractAddress from "../contracts/contract-address.json";
 
 import { useInterval } from './useInterval';
 
-import { ipfsConfig, rpcConfig } from './config';
+import { ipfsConfig, rpcConfig, BUIDLER_EVM_NETWORK_ID } from './config';
 
 const ipfsAPI = require('ipfs-http-client');
 const ipfs = ipfsAPI(ipfsConfig);
 
-// This is the Buidler EVM network id, you might change it in the buidler.config.js
-// Here's a list of network ids https://docs.metamask.io/guide/ethereum-provider.html#properties
-// to use when deploying to other networks.
-const BUIDLER_EVM_NETWORK_ID = '31337';
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
