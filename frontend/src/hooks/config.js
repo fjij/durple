@@ -6,8 +6,9 @@ export const ipfsConfig = {
 };
 
 export const rpcConfig = {
-    url: "http://localhost:8545",
-    allowInsecure: true
+    url: "https://goerli.infura.io/v3/379d113af5e5447eb496f84688f0cc03",
+    allowInsecure: false
 }
 
-const BUIDLER_EVM_NETWORK_ID = '31337';
+
+export const BUIDLER_EVM_NETWORK_ID = '5';
