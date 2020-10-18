@@ -10,7 +10,7 @@ export function CommentWidget({contentId}){
   const { subAddress } = useParams();
   return (<div><b>
     {content
-      ?<Link className="text-secondary" to={"/d/" + subAddress + "/" + contentId.toString()}><FaCommentAlt />{" "}{content.commentCount}</Link>
+      ?<Link className="text-secondary text-nowrap" to={"/d/" + subAddress + "/" + contentId.toString()}><FaCommentAlt />{" "}{content.commentCount}</Link>
       :<Skeleton width={30} />}
   </b></div>);
 }
