@@ -41,7 +41,7 @@ export function About() {
     <h1 className="mt-4">The Future of Forums</h1>
     <h5>Durple is the future of the internet. Updurp or Downdurp. </h5>
     <h5>Uplurkle or Lurkle. Join now and be a Durple.</h5>
-    <div className="mt-5">
+    <div className="mt-4">
     <Buttons />
     </div>
   </div>
