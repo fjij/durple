@@ -10,4 +10,4 @@ export const rpcConfig = {
     allowInsecure: true
 }
 
-
+const BUIDLER_EVM_NETWORK_ID = '31337';
