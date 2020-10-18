@@ -34,16 +34,17 @@ function Navbar() {
       <span className="navbar-toggler-icon"></span>
     </button>
     <div className="collapse navbar-collapse" id="navbarContent">
-        <div className="navbar-nav">
-          {subAddress?<>
-          <Link className="nav-item nav-link nav-brand" to={"/d/"+subAddress}>{subText?subText:<Skeleton width={60}/>}</Link>
-          {durple.selectedAddress?
-            <Link className=" nav-item nav-link" to={"/d/"+subAddress+"/post"}>New Post</Link>
-          :<></>}
-          </>:<></>}
-          {/*<Link className="nav-item nav-link" to="/SubDurpleHome">SubDurpleHome</Link>*/}
-          <ConnectWalletBtn />
-        </div>
+      <div className="navbar-nav mr-auto">
+        {subAddress?<>
+        <Link className="nav-item nav-link nav-brand" to={"/d/"+subAddress}>{subText?subText:<Skeleton width={60}/>}</Link>
+        {durple.selectedAddress?
+          <Link className=" nav-item nav-link" to={"/d/"+subAddress+"/post"}>New Post</Link>
+        :<></>}
+        </>:<></>}
+      </div>
+      <div className="navbar-nav">
+        <ConnectWalletBtn />
+      </div>
     </div>
     </nav>
   )
