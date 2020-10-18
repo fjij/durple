@@ -10,7 +10,7 @@ import contractAddress from "../contracts/contract-address.json";
 
 import { useInterval } from './useInterval';
 
-import { ipfsConfig, rpcConfig, BUIDLER_EVM_NETWORK_ID } from './config';
+import { ipfsConfig, rpcConfig, BUIDLER_EVM_NETWORK_ID, defaultProviderName } from './config';
 
 const ipfsAPI = require('ipfs-http-client');
 const ipfs = ipfsAPI(ipfsConfig);
@@ -53,12 +53,12 @@ export function useComment(contentId) {
   return useContent(contentId)
 }
 
-export function useContent(contentId) {
+export function useContent(contentId, active=false) {
   const durple = useDurpleContext();
   const [content, setContent] = useState(undefined);
 
   useInterval(async () => {
-    setContent(await durple.getContent(contentId));
+    setContent(await durple.getContent(contentId, active));
   }, 1000);
 
   return content;
@@ -137,13 +137,19 @@ export function DurpleProvider({children}) {
     if (selectedAddress) {
       providerRef.current = new ethers.providers.Web3Provider(window.ethereum);
     } else {
-      providerRef.current = new ethers.providers.JsonRpcProvider(rpcConfig)
+      //if (defaultProviderName) {
+        //providerRef.current = ethers.getDefaultProvider(defaultProviderName);
+      //} else {
+        providerRef.current = new ethers.providers.JsonRpcProvider(rpcConfig)
+      //}
     }
     try {
       profileRef.current = new ethers.Contract(
         contractAddress.Profile,
         ProfileArtifact.abi,
-        providerRef.current.getSigner(0)
+        selectedAddress?
+          providerRef.current.getSigner(0):
+          providerRef.current
       );
     } catch(e) {
       setNetworkError({message:"Durple profile error."});
@@ -157,7 +163,9 @@ export function DurpleProvider({children}) {
         subRef.current = new ethers.Contract(
           currentSubAddress,
           SubArtifact.abi,
-          providerRef.current.getSigner(0)
+          selectedAddress?
+            providerRef.current.getSigner(0):
+            providerRef.current
         );
       } catch(e) {
         setNetworkError({message:"Invalid sub address!"});
@@ -169,7 +177,7 @@ export function DurpleProvider({children}) {
     }
   }
 
-  async function getContent(contentId){
+  async function getContent(contentId, active){
     if (content[contentId]) {
 
       // Second time it gets called
@@ -213,8 +221,10 @@ export function DurpleProvider({children}) {
         });
       }
 
-      fetchComments();
-      fetchDurps();
+      if (active) {
+        fetchComments();
+        fetchDurps();
+      }
       return content[contentId];
     }
 

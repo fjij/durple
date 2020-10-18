@@ -10,7 +10,7 @@ import { CommentWidget } from './CommentWidget';
 
 export function Post() {
   const { contentId } = useParams();
-  const content = useContent(contentId);
+  const content = useContent(contentId, true);
   useSubAddress();
 
   return(

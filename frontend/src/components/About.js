@@ -18,7 +18,7 @@ export function About() {
         {
           profileData.featured.map(f => {
             const link = "/d/" + f.address;
-            return (<button key={f.address} class="btn btn-outline-primary mr-2" onClick={() => setRedirect(link)}>
+            return (<button key={f.address} className="btn btn-outline-primary mr-2" onClick={() => setRedirect(link)}>
               d/{f.name}
             </button>);
           })
@@ -26,9 +26,9 @@ export function About() {
       </>);
     } else {
       return (<>
-        <button class="btn btn-outline-primary mr-2"><Skeleton width={50}/></button>
-        <button class="btn btn-outline-primary"><Skeleton width={50}/></button>
-        <button class="btn btn-outline-primary ml-2"><Skeleton width={50}/></button>
+        <button className="btn btn-outline-primary mr-2"><Skeleton width={50}/></button>
+        <button className="btn btn-outline-primary"><Skeleton width={50}/></button>
+        <button className="btn btn-outline-primary ml-2"><Skeleton width={50}/></button>
       </>);
     }
   }

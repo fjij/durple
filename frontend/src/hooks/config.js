@@ -10,5 +10,7 @@ export const rpcConfig = {
     allowInsecure: false
 }
 
+export const defaultProviderName = "goerli";
+
 
 export const BUIDLER_EVM_NETWORK_ID = '5';
