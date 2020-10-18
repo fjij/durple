@@ -41,6 +41,10 @@ export function TableRow({contentId}) {
           <div>
             <h3>{title}</h3>
             <code className="walletColor">{op}</code>
+            <br />
+            <small className="text-muted">
+            {post?DurationToString(Date.now() - post.timeCreated):<Skeleton width={50}/>}
+            </small>
           </div>
         </div>
       </div>
