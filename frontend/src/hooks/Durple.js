@@ -4,17 +4,20 @@ import { ethers } from "ethers";
 import { useParams } from 'react-router-dom';
 import { useAlert } from 'react-alert';
 
-import SubArtifact from "../contracts/Sub.json";
-import ProfileArtifact from "../contracts/Profile.json";
-import contractAddress from "../contracts/contract-address.json";
 import { utf8ByteArrayToString } from 'utf8-string-bytes';
 
+import ipfsAPI from 'ipfs-http-client';
 import { useInterval } from './useInterval';
 
-import { ipfsConfig, rpcConfig, BUIDLER_EVM_NETWORK_ID} from './config';
+import configFile from "../contracts/config.json";
+import SubArtifact from "../contracts/Sub.json";
+import ProfileArtifact from "../contracts/Profile.json";
 
-const ipfsAPI = require('ipfs-http-client');
-const ipfs = ipfsAPI(ipfsConfig);
+const config = configFile.GOERLI_CONFIG;
+
+
+
+const ipfs = ipfsAPI(config.ipfs);
 
 
 // This is an error code that indicates that the user canceled a transaction
@@ -99,7 +102,7 @@ export function DurpleProvider({children}) {
 
   useEffect(() => {
     if (networkError) {
-      const message = getRpcErrorMessage(networkError);
+      const message = networkError;
       alert.error(message);
     }
   }, [networkError, alert]);
@@ -114,7 +117,7 @@ export function DurpleProvider({children}) {
     const [selectedAddress] = await window.ethereum.enable();
 
     if (!checkNetwork()) {
-      return;
+      return false;
     }
 
     setSelectedAddress(selectedAddress);
@@ -131,24 +134,26 @@ export function DurpleProvider({children}) {
     window.ethereum.on("networkChanged", ([networkId]) => {
       resetState();
     });
+
+    return true;
   }
 
   async function initializeEthers() {
     if (selectedAddress) {
       providerRef.current = new ethers.providers.Web3Provider(window.ethereum);
     } else {
-      providerRef.current = new ethers.providers.JsonRpcProvider(rpcConfig)
+      providerRef.current = new ethers.providers.JsonRpcProvider(config.rpc)
     }
     try {
       profileRef.current = new ethers.Contract(
-        contractAddress.Profile,
+        config.profileAddress,
         ProfileArtifact.abi,
         selectedAddress?
           providerRef.current.getSigner(0):
           providerRef.current
       );
     } catch(e) {
-      setNetworkError({message:"Durple profile error."});
+      setNetworkError("Could not connect to Durple.");
       console.error(e);
     }
 
@@ -164,7 +169,7 @@ export function DurpleProvider({children}) {
             providerRef.current
         );
       } catch(e) {
-        setNetworkError({message:"Invalid sub address!"});
+        setNetworkError("Invalid Subdurple");
         console.error(e);
       }
       setContent({})
@@ -411,13 +416,13 @@ export function DurpleProvider({children}) {
     setNetworkError(undefined);
   }
 
-  // This method checks if Metamask selected network is Localhost:8545
+  // This method checks if Metamask selected network is right
   function checkNetwork() {
-    if (window.ethereum.networkVersion === BUIDLER_EVM_NETWORK_ID) {
+    if (window.ethereum.networkVersion === config.networkId) {
       return true;
     }
 
-    setNetworkError('Please connect Metamask to Localhost:8545');
+    setNetworkError(`Connect wallet to ${config.name}`);
 
     return false;
   }

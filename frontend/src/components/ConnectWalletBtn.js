@@ -13,9 +13,10 @@ export function ConnectWalletBtn() {
     }
   }, [shouldAutoConnect, durple, noWalletDetected]);
 
-  function connect() {
-    durple.connectWallet();
-    localStorage.setItem('shouldAutoConnect', true);
+  async function connect() {
+    if (await durple.connectWallet()) {
+      localStorage.setItem('shouldAutoConnect', true);
+    }
   }
 
   if (window.ethereum === undefined) {
