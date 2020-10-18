@@ -10,8 +10,10 @@ import contractAddress from "../contracts/contract-address.json";
 
 import { useInterval } from './useInterval';
 
+import { ipfsConfig, rpcConfig } from './config';
+
 const ipfsAPI = require('ipfs-http-client');
-const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' });
+const ipfs = ipfsAPI(ipfsConfig);
 
 // This is the Buidler EVM network id, you might change it in the buidler.config.js
 // Here's a list of network ids https://docs.metamask.io/guide/ethereum-provider.html#properties
@@ -139,7 +141,7 @@ export function DurpleProvider({children}) {
     if (selectedAddress) {
       providerRef.current = new ethers.providers.Web3Provider(window.ethereum);
     } else {
-      providerRef.current = new ethers.providers.JsonRpcProvider({url: "http://localhost:8545", allowInsecure: true})
+      providerRef.current = new ethers.providers.JsonRpcProvider(rpcConfig)
     }
     try {
       profileRef.current = new ethers.Contract(
