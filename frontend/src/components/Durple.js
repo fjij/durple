@@ -33,12 +33,10 @@ function Navbar() {
     </button>
     <div className="collapse navbar-collapse" id="navbarContent">
       <div className="navbar-nav mr-auto">
-        {subAddress?<>
-        <Link className="nav-item nav-link nav-brand" to={"/d/"+subAddress}>{subText?subText:<Skeleton width={60}/>}</Link>
-        {durple.selectedAddress?
-          <Link className=" nav-item nav-link" to={"/d/"+subAddress+"/post"}>New Post</Link>
-        :<></>}
-        </>:<></>}
+        {subData&&<>
+          <Link className="nav-item nav-link nav-brand" to={"/d/"+subAddress}>{subText}</Link>
+          {durple.selectedAddress&&<Link className=" nav-item nav-link" to={"/d/"+subAddress+"/post"}>New Post</Link>}
+        </>}
       </div>
       <div className="navbar-nav">
         <ConnectWalletBtn />

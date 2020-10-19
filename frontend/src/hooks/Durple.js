@@ -65,6 +65,17 @@ export function useContent(contentId, active=false) {
   return content;
 }
 
+async function checkSub(ref) {
+  try {
+    const version = await ref.current.version();
+    if (version !== "DurpleV1")
+        throw new Error("Wrong version");
+  } catch {
+    return false;
+  }
+  return true;
+}
+
 export function DurpleProvider({children}) {
   // STATE
   const [currentSubAddress, setCurrentSubAddress] = useState(undefined);
@@ -75,6 +86,7 @@ export function DurpleProvider({children}) {
   // The ID about transactions being sent, and any possible error with them
   const [txBeingSent, setTxBeingSent] = useState(undefined);
   const [transactionError, setTransactionError] = useState(undefined);
+  const [subError, setSubError] = useState(undefined);
   const [networkError, setNetworkError] = useState(undefined);
 
   const alert = useAlert();
@@ -103,6 +115,13 @@ export function DurpleProvider({children}) {
       alert.error(message);
     }
   }, [networkError, alert]);
+
+  useEffect(() => {
+    if (subError) {
+      const message = subError;
+      alert.error(message);
+    }
+  }, [subError, alert]);
 
   // REFS
 
@@ -152,6 +171,7 @@ export function DurpleProvider({children}) {
     } catch(e) {
       setNetworkError("Could not connect to Durple.");
       console.error(e);
+      return;
     }
 
     if (currentSubAddress) {
@@ -165,8 +185,12 @@ export function DurpleProvider({children}) {
             providerRef.current.getSigner(0):
             providerRef.current
         );
+        if (!await checkSub(subRef)) {
+          setSubError("Invalid Subdurple");
+          subRef.current = undefined;
+        }
       } catch(e) {
-        setNetworkError("Invalid Subdurple");
+        setSubError("Invalid Subdurple");
         console.error(e);
       }
       setContent({})
@@ -411,6 +435,7 @@ export function DurpleProvider({children}) {
     setTxBeingSent(undefined);
     setTransactionError(undefined);
     setNetworkError(undefined);
+    setSubError(undefined);
   }
 
   // This method checks if Metamask selected network is right
@@ -431,6 +456,7 @@ export function DurpleProvider({children}) {
     txBeingSent,
     transactionError,
     networkError,
+    subError,
 
     connectWallet,
     dismissNetworkError,
