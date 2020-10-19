@@ -6,11 +6,16 @@ require('dotenv').config();
 // testing the frontend.
 require("./tasks/faucet");
 
+let networks = {};
+if (process.env.NETWORK_NAME) {
+  networks[process.env.NETWORK_NAME] = {
+    url: process.env.NETWORK_ENDPOINT,
+    accounts: [ `0x${process.env.NETWORK_PRIVATE_KEY}` ],
+    prettyName: process.env.NETWORK_NAME_PRETTY,
+    networkId: process.env.NETWORK_ID
+  };
+}
+
 module.exports = {
-    networks: {
-        goerli: {
-            url: process.env.NETWORK_ENDPOINT,
-            accounts: [ `0x${process.env.NETWORK_PRIVATE_KEY}` ]
-        }
-    }
+  networks
 };

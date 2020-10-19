@@ -9,12 +9,9 @@ import { utf8ByteArrayToString } from 'utf8-string-bytes';
 import ipfsAPI from 'ipfs-http-client';
 import { useInterval } from './useInterval';
 
-import configFile from "../contracts/config.json";
+import config from "../contracts/config.json";
 import SubArtifact from "../contracts/Sub.json";
 import ProfileArtifact from "../contracts/Profile.json";
-
-const config = configFile.GOERLI_CONFIG;
-
 
 
 const ipfs = ipfsAPI(config.ipfs);

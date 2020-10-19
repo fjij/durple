@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 // This is a script for deploying your contracts. You can adapt it to deploy
 // yours, or create new ones.
 async function main() {
@@ -34,6 +36,7 @@ async function main() {
   const OfficialDurpleSubFactory = await ethers.getContractFactory("OfficialDurpleSub");
   const officialDurpleSubContract = await OfficialDurpleSubFactory.deploy("durple");
   await officialDurpleSubContract.deployed();
+  console.log("Address for d/durple:", officialDurpleSubContract.address);
 
   // Deploy Profile Contract
   const ProfileFactory = await ethers.getContractFactory("Profile");
@@ -48,6 +51,15 @@ async function main() {
   saveFrontendFiles(profileContract);
 }
 
+const fs = require("fs");
+const contractsDir = __dirname + "/../frontend/src/contracts";
+
+const ipfs = {
+  host: "ipfs.infura.io",
+  port: "5001",
+  protocol: "https",
+}
+
 function saveFrontendFiles(profileContract) {
   const fs = require("fs");
   const contractsDir = __dirname + "/../frontend/src/contracts";
@@ -56,20 +68,48 @@ function saveFrontendFiles(profileContract) {
     fs.mkdirSync(contractsDir);
   }
 
+  if (network.name === "localhost") {
+    writeConfig({
+      name: network.config.url,
+      ipfs,
+      rpc: {
+        url: network.config.url,
+        allowInsecure: true
+      },
+      networkId: "31337",
+      profileAddress: profileContract.address
+    });
+
+  } else {
+    writeConfig({
+      name: network.config.prettyName,
+      ipfs,
+      rpc: {
+        url: network.config.url,
+        allowInsecure: false
+      },
+      networkId: network.config.networkId,
+      profileAddress: profileContract.address
+    });
+  }
+
+
+
+  copyArtifact("Sub");
+  copyArtifact("Profile");
+}
+
+function writeConfig(config) {
   fs.writeFileSync(
-    contractsDir + "/contract-address.json",
-    JSON.stringify({ Profile: profileContract.address }, undefined, 2)
+    contractsDir + "/config.json",
+    JSON.stringify(config, undefined, 2)
   );
+}
 
-  // Copy ABI artifacts for contracts
+function copyArtifact(name) {
   fs.copyFileSync(
-    __dirname + "/../artifacts/Sub.json",
-    contractsDir + "/Sub.json"
-  );
-
-  fs.copyFileSync(
-    __dirname + "/../artifacts/Profile.json",
-    contractsDir + "/Profile.json"
+    __dirname + `/../artifacts/${name}.json`,
+    contractsDir + `/${name}.json`
   );
 }
 
