@@ -28,7 +28,7 @@ export function MakePost() {
   }
   return(
     <>
-    {waiting?<Loading />:<></>}
+    {waiting?<Loading>Posting...</Loading>:<></>}
     <form className="mt-4" onSubmit={async (e)=>{
       // make post
       e.preventDefault()
@@ -45,14 +45,14 @@ export function MakePost() {
     <h3 className="mb-3">{headerText?headerText:<Skeleton />}</h3>
     <div className="form-group">
       <label htmlFor="title">Title</label>
-      <input type="text" className="form-control" id="title" value={title} onChange={(e)=>{
+      <input type="text" autocomplete="off" className="form-control" id="title" value={title} onChange={(e)=>{
         setTitle(e.target.value)
       }}></input>
     </div>
 
     <div className="form-group">
       <label htmlFor="image">Image Link (url-link)</label>
-      <input type="url" className="form-control" id="image" value={image} onChange={(e)=>{
+      <input type="url" autocomplete="off" className="form-control" id="image" value={image} onChange={(e)=>{
         setImage(e.target.value)
       }}></input>
     </div>
