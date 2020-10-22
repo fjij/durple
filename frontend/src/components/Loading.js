@@ -1,6 +1,6 @@
 import React from "react";
 
-export function Loading() {
+export function Loading({children}) {
   return (
     <div
       style={{
@@ -29,6 +29,8 @@ export function Loading() {
         <div className="spinner-border" role="status">
           <span className="sr-only">Loading...</span>
         </div>
+        <br />
+        <span>{children}</span>
       </div>
     </div>
   );
