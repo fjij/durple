@@ -31,7 +31,16 @@ export function Post() {
               </>
               :<></>
           }
-          <p className="mt-1">{content?content.data.text:<Skeleton count={5}/>}</p>
+          <p className="mt-1">{
+            content?
+
+              content.data.text.split("\n").map((item, idx) => <span key={idx}>
+                {item}
+                <br/>
+              </span>)
+
+              :<Skeleton count={5}/>
+          }</p>
           <div className="d-flex flex-row p-0">
               <Voter contentId={contentId}/>
               <CommentWidget contentId={contentId}/>
