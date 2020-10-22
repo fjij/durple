@@ -6,6 +6,7 @@ import { DurationToString } from '../utils/time'
 import { CommentWidget } from './CommentWidget';
 import { Voter } from './Voter';
 import {Redirect, useParams} from "react-router-dom";
+import error from '../assets/durpleError.png'
 
 export function SingleCard({contentId}) {
   const post = usePost(contentId);
@@ -32,12 +33,14 @@ export function SingleCard({contentId}) {
     }}>
       {
         post&&post.data.isImage&&post.data.url!==""?
-        <img className="card-img-top" src={post.data.url} alt="Post Attachment"></img>
+        <img className="card-img-top"
+        src={post.data.url} onError={(e)=>{e.target.onerror = null; e.target.src='https://i.imgur.com/ysjsmQY.png'}}/>
+
         :<></>
       }
 
       <div className="card-body">
-        <h5 className="card-title"><b>{post?title:<Skeleton />}</b></h5>
+        <h5 className="card-title wordLength"><b>{post?title:<Skeleton />}</b></h5>
         <div className="card-text">
           <p className="wordLength">
             {post?text:<Skeleton />}
