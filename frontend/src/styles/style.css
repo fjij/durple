@@ -1,3 +1,6 @@
+body {
+  padding-top: 65px;
+}
 .navbar-custom {
   /*background-color: #600080;*/
   background-color: #eeeeee;

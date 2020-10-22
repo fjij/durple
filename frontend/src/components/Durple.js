@@ -25,7 +25,7 @@ function Navbar() {
   let subText = undefined;
   if (subData) subText = "d/"+subData.name;
   return (
-    <nav className="navbar navbar-expand-md navbar-light navbar-custom nav-bot-pad">
+    <nav className="navbar navbar-expand-md navbar-light navbar-custom nav-bot-pad fixed-top">
     <img src={logo} style={{width:"30px", margin:"10px"}} className="img-custom" alt="logo"></img>
     <a className="navbar-brand" href="/">Durple</a>
     <button type="button" className="navbar-toggler" data-toggle="collapse" data-target="#navbarContent">
