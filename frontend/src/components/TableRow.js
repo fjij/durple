@@ -35,7 +35,10 @@ export function TableRow({contentId}) {
         <div className="d-inline-flex mt-3 mr-2">
           {
             post&&post.data.isImage&&post.data.url!==""?
-              <img className="table-img mr-4" src={post.data.url} alt="Post attachment"></img>
+
+              <img className="table-img mr-4"
+              src={post.data.url} onError={(e)=>{e.target.onerror = null; e.target.src='https://i.imgur.com/ysjsmQY.png'}}/>
+
               :<></>
           }
           <div>

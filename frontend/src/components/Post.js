@@ -27,7 +27,10 @@ export function Post() {
             content&&content.data.isImage&&content.data.url!==""?
               <>
                 <br></br>
-                <img className="card-img-top col-md-6 col-xl-4 p-0 mt-3" src={content.data.url} alt="Post Attachment"></img>
+
+                <img className="card-img-top col-md-6 col-xl-4 p-0 mt-3"
+                src={content.data.url} onError={(e)=>{e.target.onerror = null; e.target.src=''}}/>
+
               </>
               :<></>
           }
