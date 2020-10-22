@@ -42,7 +42,7 @@ export function TableRow({contentId}) {
               :<></>
           }
           <div>
-            <h3>{title}</h3>
+            <h3 className='wordLengthWidth'>{title}</h3>
             <code className="walletColor">{op}</code>
             <br />
             <small className="text-muted">

@@ -16,6 +16,13 @@ body {
   text-overflow: ellipsis;
 }
 
+.wordLengthWidth{
+  height: 50px;
+  width: 20em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .subTitle {
   /*color:
   background-color: #600080;*/
