@@ -4,7 +4,7 @@ import { About } from "./About";
 import { SubDurple } from "./SubDurple";
 import { MakePost } from "./MakePost";
 import { Post } from "./Post";
-import { ConnectWalletBtn } from "./ConnectWalletBtn";
+import { ConnectWallet } from "./ConnectWallet";
 import logo from '../assets/logo.ico'
 import {useSubAddress, useSubData, useDurpleContext} from '../hooks/Durple';
 import Skeleton from 'react-loading-skeleton';
@@ -39,7 +39,7 @@ function Navbar() {
         </>}
       </div>
       <div className="navbar-nav">
-        <ConnectWalletBtn />
+        <ConnectWallet />
       </div>
     </div>
     </nav>

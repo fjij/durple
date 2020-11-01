@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import '../styles/style.css';
 import { useDurpleContext } from '../hooks/Durple';
 
-export function ConnectWalletBtn() {
+export function ConnectWallet() {
   const durple = useDurpleContext();
   const localStorage = window.localStorage;
   const shouldAutoConnect = localStorage.getItem("shouldAutoConnect");
